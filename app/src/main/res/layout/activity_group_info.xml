@@ -7,6 +7,8 @@
     android:orientation="vertical"
     tools:context=".GroupInfoActivity">
 
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,6 +17,10 @@
         android:textSize="40dp"
         android:textStyle="bold"
         android:text="GroupX"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:text="Leave"
+        android:layout_height="wrap_content"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +33,23 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:textSize="20dp"
+        android:text="Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes (also known as modes of discourse), along with exposition, argumentation, and narration."
         android:id="@+id/groupDescription"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:text="All List Events"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Event"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/eventList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 
 
 </LinearLayout>
