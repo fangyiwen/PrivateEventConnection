@@ -31,21 +31,14 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         BaseMessage message = (BaseMessage) mMessageList.get(position);
 
-//        if (message.getuID().equals(mAuth.getCurrentUser().getUid())) {
-//            // If the current user is the sender of the message
-//            return VIEW_TYPE_MESSAGE_SENT;
-//        } else {
-//            // If some other user sent the message
-//            return VIEW_TYPE_MESSAGE_RECEIVED;
-//        }
-
-        if(temp==1){
-            temp =2;
-            return temp;
-        }else{
-            temp = 1;
-            return temp;
+        if (message.getuID().equals(mAuth.getCurrentUser().getUid())) {
+            // If the current user is the sender of the message
+            return VIEW_TYPE_MESSAGE_SENT;
+        } else {
+            // If some other user sent the message
+            return VIEW_TYPE_MESSAGE_RECEIVED;
         }
+
     }
 
     @NonNull

@@ -4,17 +4,21 @@ public class BaseMessage {
     private String name;
     private String content;
     private String time;
-    private String uID;
+    private String uid;
 
-    BaseMessage(String name, String content, String time, String uID){
+    public BaseMessage(String name, String content, String time, String uID){
         this.name = name;
         this.content = content;
         this.time = time;
-        this.uID = uID;
+        this.uid = uID;
+    }
+    public BaseMessage(){
+
     }
 
+
     public void setuID(String uID) {
-        this.uID = uID;
+        this.uid = uID;
     }
 
     public void setContent(String content) {
@@ -30,7 +34,7 @@ public class BaseMessage {
     }
 
     public String getuID() {
-        return uID;
+        return uid;
     }
 
     public String getContent() {

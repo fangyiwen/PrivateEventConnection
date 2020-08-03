@@ -1,56 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".LoginActivity">
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Private Event Connection"
+        android:layout_gravity="center_horizontal"
+        android:textSize="30dp"
+        android:layout_marginTop="50dp"
+        />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-
-        android:padding="16dp"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Private Event Connection"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:text="Email"
+            android:layout_marginRight="5dp"
+            />
 
-
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <EditText
             android:id="@+id/email"
-            android:layout_marginTop="10dp"
-            android:hint="Username"/>
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"/>
 
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/password"
-            android:layout_marginTop="10dp"
-            android:hint="Password"
-            android:inputType="textPassword"/>
-
-
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="login"
-            android:id="@+id/login"
-            android:background="@color/colorPrimaryDark"
-            android:layout_marginTop="10dp"
-            android:textColor="#fff"/>
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:layout_marginRight="5dp"
+            />
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:text="Login"
+        />
+
+
+</LinearLayout>

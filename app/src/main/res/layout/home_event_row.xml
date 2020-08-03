@@ -16,37 +16,30 @@
             android:layout_alignTop="@+id/joinEvent"
             android:layout_alignBottom="@+id/joinEvent"
             android:layout_alignParentLeft="true"
-            android:id="@+id/eventTitle"
+            android:id="@+id/home_eventTitle"
             android:textSize="22sp"
             android:gravity="center"
             android:textStyle="bold"
             android:text="Event Name"/>
         <TextView
-            android:id="@+id/eventtime"
+            android:id="@+id/home_eventtime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="8.10.2020 12:30"
-            android:layout_below="@+id/eventTitle"
+            android:layout_below="@+id/home_eventTitle"
             android:layout_alignParentLeft="true"
             android:textSize="20sp"/>
 
         <TextView
-            android:id="@+id/eventloc"
+            android:id="@+id/home_eventloc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="123 parkway"
-            android:layout_below="@+id/eventtime"
+            android:layout_below="@+id/home_eventtime"
             android:layout_alignParentLeft="true"
             android:textSize="20sp"/>
 
 
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:id="@+id/joinEvent"
-            android:text="Join"/>
     </RelativeLayout>
 
 

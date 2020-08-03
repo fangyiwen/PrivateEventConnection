@@ -55,7 +55,7 @@ public class GroupsFragment extends Fragment {
         groupNames = new ArrayList<>();
 
         final CustomAdapter customAdapter = new CustomAdapter();
-
+        gridView.setAdapter(customAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -87,8 +87,7 @@ public class GroupsFragment extends Fragment {
 
                 // Different thread here. We need to notify the gridview thread to display group information
                 // This code is a must.
-                //customAdapter.notifyDataSetChanged();
-                gridView.setAdapter(customAdapter);
+                customAdapter.notifyDataSetChanged();
 
 
 
