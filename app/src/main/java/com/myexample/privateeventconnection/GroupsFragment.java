@@ -55,7 +55,7 @@ public class GroupsFragment extends Fragment {
         groupNames = new ArrayList<>();
 
         final CustomAdapter customAdapter = new CustomAdapter();
-        gridView.setAdapter(customAdapter);
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -79,6 +79,7 @@ public class GroupsFragment extends Fragment {
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                groupNames.clear();
                 // Iterate through all groups and get their names. Add names to groupNames arraylist.
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     groupNames.add(child.getKey());
@@ -86,7 +87,8 @@ public class GroupsFragment extends Fragment {
 
                 // Different thread here. We need to notify the gridview thread to display group information
                 // This code is a must.
-                customAdapter.notifyDataSetChanged();
+                //customAdapter.notifyDataSetChanged();
+                gridView.setAdapter(customAdapter);
 
 
 

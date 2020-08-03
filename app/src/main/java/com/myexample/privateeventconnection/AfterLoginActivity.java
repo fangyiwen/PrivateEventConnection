@@ -54,6 +54,8 @@ public class AfterLoginActivity extends AppCompatActivity {
                 // Go back to LoginActivity
                 Intent intent = new Intent(AfterLoginActivity.this, LoginActivity.class);
                 startActivity(intent);
+
+
         }
         return super.onOptionsItemSelected(item);
     }
