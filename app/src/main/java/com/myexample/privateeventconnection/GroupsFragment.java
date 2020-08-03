@@ -79,6 +79,7 @@ public class GroupsFragment extends Fragment {
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                groupNames.clear();
                 // Iterate through all groups and get their names. Add names to groupNames arraylist.
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     groupNames.add(child.getKey());

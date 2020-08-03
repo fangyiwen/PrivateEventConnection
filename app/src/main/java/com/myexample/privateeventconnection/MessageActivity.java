@@ -1,45 +1,128 @@
 package com.myexample.privateeventconnection;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class MessageActivity extends AppCompatActivity {
     RecyclerView mMessageRecycler;
     MessageListAdapter mMessageAdapter;
     List<BaseMessage> messageList;
-    
+    EditText editText;
+    Button btnSend;
+    private DatabaseReference mDatabase;
+    String eventtoken;
+    String uid;
+    String groupName;
+    String myname;
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        editText = findViewById(R.id.edittext_chatbox);
+        btnSend = findViewById(R.id.button_chatbox_send);
+        context = this;
+        Intent intent = getIntent();
+        groupName = intent.getStringExtra("groupname");
+        eventtoken = intent.getStringExtra("eventtoken");
+        myname = intent.getStringExtra("name");
+        uid = intent.getStringExtra("uid");
+
+        mDatabase = FirebaseDatabase.getInstance().getReference()
+                .child("Groups").child(groupName)
+                .child("Events").child(eventtoken)
+                .child("Messages");
+
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String content = editText.getText().toString();
+                if(content.isEmpty()){
+                    Toast.makeText(context, "Input cannot be empty!", Toast.LENGTH_SHORT).show();
+                }else{
+                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss")
+                            .format(Calendar.getInstance().getTime());
+                    Log.d("timeStamp", timeStamp);
+
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.put("name", myname);
+                    hashMap.put("content", content);
+                    hashMap.put("time", timeStamp);
+                    hashMap.put("uid", uid);
+                    mDatabase.child(timeStamp).setValue(hashMap);
+                    editText.setText("");
+                }
+
+            }
+        });
+
+
+//        mDatabase.addValueEventListener
+
+
+
 
 
 
         messageList = new ArrayList<>();
-        String text = "A message is a discrete unit of communication intended by the source for consumption by some recipient or group of recipients. A message may be delivered by various means, including courier, telegraphy, carrier pigeon and electronic bus. A message can be the content of a broadcast.";
-        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-        mMessageRecycler = (RecyclerView) findViewById(R.id.reyclerview_message_list);
-        mMessageAdapter = new MessageListAdapter(this, messageList);
-        mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mMessageRecycler.setAdapter(mMessageAdapter);
+//        String text = "A message is a discrete unit of communication intended by the source for consumption by some recipient or group of recipients. A message may be delivered by various means, including courier, telegraphy, carrier pigeon and electronic bus. A message can be the content of a broadcast.";
+//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
+//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
 
-        mMessageRecycler.scrollToPosition(messageList.size()-1);
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                messageList.clear();
+                for(DataSnapshot sn: snapshot.getChildren()){
+                    BaseMessage msg = sn.getValue(BaseMessage.class);
+                    messageList.add(msg);
+                }
+                mMessageRecycler = (RecyclerView) findViewById(R.id.reyclerview_message_list);
+                mMessageAdapter = new MessageListAdapter(context, messageList);
+                mMessageRecycler.setLayoutManager(new LinearLayoutManager(context));
+                mMessageRecycler.setAdapter(mMessageAdapter);
+                mMessageRecycler.scrollToPosition(messageList.size()-1);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 }

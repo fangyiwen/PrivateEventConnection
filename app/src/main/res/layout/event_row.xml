@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="10dp"
-    android:background="@color/eventCard">
+    android:background="@color/colorPrimary">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -19,15 +19,28 @@
             android:id="@+id/eventTitle"
             android:textSize="22sp"
             android:gravity="center"
+            android:textStyle="bold"
             android:text="Event Name"/>
         <TextView
-            android:id="@+id/eventDescription"
+            android:id="@+id/eventtime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="aaaaaa"
+            android:text="8.10.2020 12:30"
             android:layout_below="@+id/eventTitle"
             android:layout_alignParentLeft="true"
             android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/eventloc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="123 parkway"
+            android:layout_below="@+id/eventtime"
+            android:layout_alignParentLeft="true"
+            android:textSize="20sp"/>
+
+
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
