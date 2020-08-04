@@ -9,9 +9,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +31,7 @@ public class EventActivity extends AppCompatActivity {
     Button chat;
     Context context;
     String name;
+    ImageButton edit;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     String uid;
@@ -42,14 +46,78 @@ public class EventActivity extends AppCompatActivity {
         location = findViewById(R.id.eventlocation);
         description = findViewById(R.id.desc);
         join = findViewById(R.id.eventjoin);
+        edit = findViewById(R.id.edit);
         context = this;
         //TODO ACCEPT EVENTNAME AND GROUPNAME
         Intent intent = getIntent();
         final String groupName = intent.getStringExtra("groupname");
         final String token = intent.getStringExtra("token");
-
+        final String btntext = intent.getStringExtra("buttontext");
         mAuth = FirebaseAuth.getInstance();
         uid = mAuth.getCurrentUser().getUid();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MessageActivity.class);
+                intent.putExtra("groupname", groupName);
+                intent.putExtra("uid", uid);
+                intent.putExtra("eventtoken", token);
+                intent.putExtra("name", name);
+                startActivity(intent);
+            }
+        });
+        //TODO 判断admin token 和 uid 是否一致 -> edit button 显示
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean admin = false;
+                if(snapshot.child("Users").child(uid).child("Admin").getValue().toString().equals("1")){
+                    admin = true;
+                }
+                if(!snapshot.child("Groups").child(groupName).child("Events").child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
+                    admin = true;
+                }
+                if(!admin){
+                    edit.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        //TODO 判断这个event 是否还存在 如果不存在返回上一级
+
+        join.setText(btntext);
+        final DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference("Users").child(uid).child("Groups")
+                .child(groupName);
+        join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(join.getText().toString().equals("Leave")){
+                    reference.child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            join.setText("Join");
+                        }
+                    });
+
+                }else{
+                    reference.child(token).setValue("1").addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            join.setText("Leave");
+                        }
+                    });
+                }
+            }
+        });
+
+
 
         mDatabase = FirebaseDatabase.getInstance().getReference()
                 .child("Groups").child(groupName)
@@ -91,17 +159,20 @@ public class EventActivity extends AppCompatActivity {
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(name!=null){
-                    Intent intent = new Intent(context, MessageActivity.class);
-                    intent.putExtra("groupname", groupName);
-                    intent.putExtra("uid", uid);
-                    intent.putExtra("eventtoken", token);
-                    intent.putExtra("name", name);
-                    startActivity(intent);
+                if(join.getText().toString().equals("Join")){
+                    Toast.makeText(context, "You need to join first!", Toast.LENGTH_SHORT).show();
                 }else{
-                    Toast.makeText(context, "Please try again!", Toast.LENGTH_SHORT).show();
+                    if(name!=null){
+                        Intent intent = new Intent(context, MessageActivity.class);
+                        intent.putExtra("groupname", groupName);
+                        intent.putExtra("uid", uid);
+                        intent.putExtra("eventtoken", token);
+                        intent.putExtra("name", name);
+                        startActivity(intent);
+                    }else{
+                        Toast.makeText(context, "Please try again!", Toast.LENGTH_SHORT).show();
+                    }
                 }
-
             }
         });
 
