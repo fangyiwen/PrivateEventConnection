@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:text="Create Event"
             android:textSize="20sp"
+            android:id="@+id/eventformtitle"
             android:textStyle="bold"/>
 
 

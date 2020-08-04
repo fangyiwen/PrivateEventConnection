@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 public class EventActivity extends AppCompatActivity {
     TextView eventname;
     TextView time;
@@ -60,11 +62,9 @@ public class EventActivity extends AppCompatActivity {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, MessageActivity.class);
-                intent.putExtra("groupname", groupName);
-                intent.putExtra("uid", uid);
-                intent.putExtra("eventtoken", token);
-                intent.putExtra("name", name);
+                Intent intent = new Intent(context, EventForm.class);
+                intent.putExtra("groupName", groupName);
+                intent.putExtra("ts", token);
                 startActivity(intent);
             }
         });
@@ -76,7 +76,7 @@ public class EventActivity extends AppCompatActivity {
                 if(snapshot.child("Users").child(uid).child("Admin").getValue().toString().equals("1")){
                     admin = true;
                 }
-                if(!snapshot.child("Groups").child(groupName).child("Events").child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
+                if(snapshot.child("Groups").child(groupName).child("Events").child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
                     admin = true;
                 }
                 if(!admin){
@@ -107,10 +107,32 @@ public class EventActivity extends AppCompatActivity {
                     });
 
                 }else{
-                    reference.child(token).setValue("1").addOnCompleteListener(new OnCompleteListener<Void>() {
+                    mDatabase = FirebaseDatabase.getInstance().getReference()
+                            .child("Groups").child(groupName).child("Events").child(token);
+                    mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            join.setText("Leave");
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Event event = snapshot.child("EventInfo").getValue(Event.class);
+                            HashMap<String, String > hashMap = new HashMap<>();
+                            hashMap.put("Description", event.getDescription());
+                            hashMap.put("Admin", event.getAdmin());
+                            hashMap.put("EventName", event.getEventName());
+                            hashMap.put("EventTime", event.getEventName());
+                            hashMap.put("EventToken", event.getEventToken());
+                            hashMap.put("Location", event.getLocation());
+                            hashMap.put("Latitude", event.getLatitude());
+                            hashMap.put("Longitude", event.getLongitude());
+                            reference.child(token).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    join.setText("Leave");
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
                     });
                 }

@@ -2,6 +2,14 @@
 <resources>
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#226e6e</color>
-    <color name="eventCard">#d6f2d2</color>
+    <color name="eventCard">#6CBF84</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="colorpurple">#726A95</color>
+    <color name="silver">#F2AD9F</color>
+    <color name="ivory">#F4E8C1</color>
+    <color name="pink">#F26968</color>
+    <color name="cream">#E9DCCD</color>
+    <color name="limestone">#DFE2D2</color>
+    <color name="grey">#D3D3D3</color>
+
 </resources>

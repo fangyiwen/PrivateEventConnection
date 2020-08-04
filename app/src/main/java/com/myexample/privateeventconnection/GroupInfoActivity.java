@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -36,14 +39,15 @@ public class GroupInfoActivity extends AppCompatActivity {
     private DatabaseReference userReference;
     private Button joinorleave;
     private FirebaseAuth mAuth;
+    private Parcelable recyclerViewState;
     RecyclerView recyclerView;
     EventsAdapter eventsAdapter;
     List<Event> mEvents;
-    List<String> eventTokens;
     Set<String> joined;
     Context context;
     Button createEvent;
     String uid;
+
 
 
     @Override
@@ -73,6 +77,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
 
+
         //-----
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,40 +85,48 @@ public class GroupInfoActivity extends AppCompatActivity {
                 Intent intent = new Intent(context, EventForm.class);
                 intent.putExtra("groupName", groupname);
                 intent.putExtra("ts", "");
-                intent.putExtra("eventname", "");
-                intent.putExtra("location", "");
-                intent.putExtra("eventdate", "");
-                intent.putExtra("eventtime", "");
-                intent.putExtra("description", "");
                 startActivity(intent);
             }
         });
         mEvents = new ArrayList<Event>();
-        eventTokens = new ArrayList<>();
         assert groupname != null;
         reference = FirebaseDatabase.getInstance().getReference();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 joined.clear();
-                eventTokens.clear();
                 mEvents.clear();
                 for(DataSnapshot sn: snapshot.getChildren()){
                     if(sn.getKey().equals("Users")){
                         for(DataSnapshot tk: sn.child(uid).child("Groups").child(groupname).getChildren()){
+                            //TODO not checking dummy joined events, but it's ok so far
                             joined.add(tk.getKey());
                         }
                     }
 //                    joined.add(sn.getKey());
                     if(sn.getKey().equals("Groups")){
                         for(DataSnapshot tk: sn.child(groupname).child("Events").getChildren()){
-                            eventTokens.add(tk.getKey().toString());
                             Event event = tk.child("EventInfo").getValue(Event.class);
-                            mEvents.add(event);
+                            if(event!=null && !event.getLatitude().equals("-92")){
+                                mEvents.add(event);
+                            }
+
+
                         }
                     }
                 }
-                eventsAdapter = new EventsAdapter(context, mEvents, eventTokens, groupname, joined);
+                if(!mEvents.isEmpty()){
+                    Collections.sort(mEvents, new Comparator<Event>() {
+                        @Override
+                        public int compare(Event o1, Event o2) {
+                            return o2.getEventTime().compareTo(o1.getEventTime());
+                        }
+                    });
+                }
+
+                //to restore the position before click
+                recyclerView.getLayoutManager().onRestoreInstanceState(recyclerView.getLayoutManager().onSaveInstanceState());
+                eventsAdapter = new EventsAdapter(context, mEvents, groupname, joined);
                 recyclerView.setAdapter(eventsAdapter);
             }
 
