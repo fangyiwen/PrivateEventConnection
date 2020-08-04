@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,10 +43,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         this.events = events;
         this.tokens = tokens;
         this.groupname = groupname;
-        this.joined = joined;
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         this.uid = currentUser.getUid();
+        this.joined = joined;
     }
 
     @NonNull
@@ -49,12 +54,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     public EventsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.event_row, parent, false);
         return new EventsAdapter.ViewHolder(view);
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull final EventsAdapter.ViewHolder holder, int position) {
         final Event event = events.get(position);
         final String token = tokens.get(position);
+
         if(joined.contains(token)){
             holder.join.setText("Leave");
         }else{
@@ -95,6 +102,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 Intent intent = new Intent(mContext, EventActivity.class);
                 intent.putExtra("token", token);
                 intent.putExtra("groupname", groupname);
+                intent.putExtra("buttontext", holder.join.getText().toString());
                 mContext.startActivity(intent);
             }
         });

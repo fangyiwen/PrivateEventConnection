@@ -42,6 +42,7 @@ public class EventForm extends AppCompatActivity {
     MaterialAutoCompleteTextView hourAndMinutes;
     Button submit_btn;
     DatabaseReference reference;
+    DatabaseReference userreference;
     Context context;
 
     @Override
@@ -49,6 +50,9 @@ public class EventForm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_form);
 
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        final String userID = currentUser.getUid();
         eventName = findViewById(R.id.eventformname);
         location = findViewById(R.id.eventformlocation);
         description = findViewById(R.id.eventformdesc);
@@ -59,13 +63,18 @@ public class EventForm extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String groupName = intent.getStringExtra("groupName");
+        final String ts = intent.getStringExtra("ts");
+        final String eventname = intent.getStringExtra("eventname");
+        final String loc = intent.getStringExtra("location");
+        final String eventdate = intent.getStringExtra("eventdate");
+        final String eventtime = intent.getStringExtra("eventtime");
+        final String desc = intent.getStringExtra("description");
+
 
         reference = FirebaseDatabase.getInstance().getReference("Groups").child(groupName).child("Events");
+        userreference = FirebaseDatabase.getInstance().getReference("Users").child(userID).child("Groups").child(groupName);
         final Calendar myCalendar = Calendar.getInstance();
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        final String userID = currentUser.getUid();
         submit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,10 +121,15 @@ public class EventForm extends AppCompatActivity {
                                         if(error != null){
                                             Toast.makeText(context, "Event creation failed. Code 2", Toast.LENGTH_SHORT).show();
                                         }else{
-                                            Intent intent1 = new Intent(context, GroupInfoActivity.class);
-                                            intent1.putExtra("groupname", groupName);
-                                            startActivity(intent1);
-                                            finish();
+                                            userreference.child(ts).child("EventInfo").setValue(hashMap, new DatabaseReference.CompletionListener() {
+                                                @Override
+                                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                    Intent intent1 = new Intent(context, GroupInfoActivity.class);
+                                                    intent1.putExtra("groupname", groupName);
+                                                    startActivity(intent1);
+                                                    finish();
+                                                }
+                                            });
                                         }
                                     }
                                 });
@@ -123,10 +137,7 @@ public class EventForm extends AppCompatActivity {
                         }
                     });
 
-
                 }
-
-
             }
         });
 

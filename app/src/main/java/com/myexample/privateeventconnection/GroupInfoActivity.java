@@ -79,43 +79,44 @@ public class GroupInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(context, EventForm.class);
                 intent.putExtra("groupName", groupname);
+                intent.putExtra("ts", "");
+                intent.putExtra("eventname", "");
+                intent.putExtra("location", "");
+                intent.putExtra("eventdate", "");
+                intent.putExtra("eventtime", "");
+                intent.putExtra("description", "");
                 startActivity(intent);
             }
         });
         mEvents = new ArrayList<Event>();
         eventTokens = new ArrayList<>();
         assert groupname != null;
-        reference = FirebaseDatabase.getInstance().getReference("Groups")
-                .child(groupname).child("Events");
-        userReference = FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("Groups").child(groupname).child("JoinedEvents");
-        userReference.addValueEventListener(new ValueEventListener() {
+        reference = FirebaseDatabase.getInstance().getReference();
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                joined.clear();
+                eventTokens.clear();
+                mEvents.clear();
                 for(DataSnapshot sn: snapshot.getChildren()){
-                    joined.add(sn.getKey());
-                }
-                reference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        mEvents.clear();
-                        for(DataSnapshot sn: snapshot.getChildren()){
-                            //TODO need a filter to filter time
-                            eventTokens.add(sn.getKey().toString());
-                            Event event = sn.child("EventInfo").getValue(Event.class);
-                            assert event != null;
+                    if(sn.getKey().equals("Users")){
+                        for(DataSnapshot tk: sn.child(uid).child("Groups").child(groupname).getChildren()){
+                            joined.add(tk.getKey());
+                        }
+                    }
+//                    joined.add(sn.getKey());
+                    if(sn.getKey().equals("Groups")){
+                        for(DataSnapshot tk: sn.child(groupname).child("Events").getChildren()){
+                            eventTokens.add(tk.getKey().toString());
+                            Event event = tk.child("EventInfo").getValue(Event.class);
                             mEvents.add(event);
                         }
-                        eventsAdapter = new EventsAdapter(context, mEvents, eventTokens, groupname, joined);
-                        recyclerView.setAdapter(eventsAdapter);
                     }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                }
+                eventsAdapter = new EventsAdapter(context, mEvents, eventTokens, groupname, joined);
+                recyclerView.setAdapter(eventsAdapter);
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
