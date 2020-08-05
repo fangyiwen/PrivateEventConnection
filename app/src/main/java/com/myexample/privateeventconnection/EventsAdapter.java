@@ -73,10 +73,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             holder.join.setText("Join");
         }
 
-        String myFormat = "MM/dd/yy hh:ss"; //In which you need put here
+        String myFormat = "MM/dd/yy, HH:mm"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         final Calendar myCalendar = Calendar.getInstance();
         String currentTime = sdf.format(myCalendar.getTime());
+        Log.d("currenttime", currentTime);
         if(event.getEventTime().compareTo(currentTime) < 0){
             holder.itemView.setBackgroundColor(Color.parseColor("#DFE2D2"));
         }else{

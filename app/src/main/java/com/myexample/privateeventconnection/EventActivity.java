@@ -122,7 +122,7 @@ public class EventActivity extends AppCompatActivity {
                             hashMap.put("Location", event.getLocation());
                             hashMap.put("Latitude", event.getLatitude());
                             hashMap.put("Longitude", event.getLongitude());
-                            reference.child(token).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            reference.child(token).child("EventInfo").setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     join.setText("Leave");
