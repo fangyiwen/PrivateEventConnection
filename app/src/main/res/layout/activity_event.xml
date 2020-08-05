@@ -93,8 +93,8 @@
         android:id="@+id/desc"/>
 
     <ImageButton
-        android:layout_width="60sp"
-        android:layout_height="60sp"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
         android:text="Chat"
         android:id="@+id/chat"
         android:src="@drawable/message"
