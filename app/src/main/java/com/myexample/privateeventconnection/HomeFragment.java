@@ -196,13 +196,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         String uid = currentUser.getUid();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        // [WIP] for test
-        uid = "7CqVW46gyLQqekKeuTIXT2xL4AW2";
         mDatabase.child("Users").child(uid).child("Groups").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 eventArray.clear();
                 for (DataSnapshot group : dataSnapshot.getChildren()) {
+                    if (!group.hasChild("Events")) {
+                        continue;
+                    }
                     for (DataSnapshot event : group.getChildren()) {
                         String eventName = event.child("EventInfo").child("EventName").getValue(String.class);
                         String eventTime = event.child("EventInfo").child("EventTime").getValue(String.class);

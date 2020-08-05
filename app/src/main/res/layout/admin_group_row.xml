@@ -10,43 +10,49 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
+
         <TextView
+            android:id="@+id/admin_textView_groupName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/joinEvent"
-            android:layout_alignBottom="@+id/joinEvent"
+            android:layout_alignTop="@+id/admin_delGroup"
+            android:layout_alignBottom="@+id/admin_delGroup"
             android:layout_alignParentLeft="true"
-            android:id="@+id/eventTitle"
-            android:textSize="22sp"
             android:gravity="center"
-            android:textStyle="bold"
-            android:text="Event Name"/>
-        <TextView
-            android:id="@+id/eventtime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="8.10.2020 12:30"
-            android:layout_below="@+id/eventTitle"
-            android:layout_alignParentLeft="true"
-            android:textSize="20sp"/>
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/eventloc"
+            android:id="@+id/admin_textView_groupDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="123 parkway"
-            android:layout_below="@+id/eventtime"
+            android:layout_below="@+id/admin_textView_groupName"
             android:layout_alignParentLeft="true"
-            android:textSize="20sp"/>
-
+            android:textSize="20sp" />
 
 
         <Button
+            android:id="@+id/admin_delGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:id="@+id/admin_delUser"
-            android:text="Join"/>
+            android:text="Delete" />
+
+        <Button
+            android:id="@+id/admin_addUserInGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/admin_delGroup"
+            android:layout_alignParentRight="true"
+            android:text="Add User" />
+
+        <Button
+            android:id="@+id/admin_removeUserFromGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/admin_addUserInGroup"
+            android:layout_alignParentRight="true"
+            android:text="Remove User" />
     </RelativeLayout>
 
 

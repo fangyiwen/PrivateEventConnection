@@ -5,9 +5,121 @@
     android:layout_height="match_parent"
     tools:context=".InfoFragment">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="User Role Settings"
+                android:textAlignment="center" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Edit Personal Info"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/yf_textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Email: Loading..." />
+
+            <TextView
+                android:id="@+id/yf_textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Current Nick Name: Loading..." />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/yf_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="New Nick Name" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/yf_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Update Nick Name" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/yf_editText3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Old Password"
+                    android:inputType="textPassword" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/yf_editText2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="New Password"
+                    android:inputType="textPassword" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/yf_textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Caution: At lest six characters" />
+
+            <Button
+                android:id="@+id/yf_button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Update Password" />
+
+            <TextView
+                android:id="@+id/yf_textView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Admin Role Settings (Root User)"
+                android:textAlignment="center" />
+
+            <Button
+                android:id="@+id/yf_button3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="Admin" />
+
+            <TextView
+                android:id="@+id/yf_textView9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Caution: Accessed by Administrator only" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </FrameLayout>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AdminActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/admin_textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Admin Role Settings (Root User)"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/admin_textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create New User" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/admin_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/admin_editText2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Initial Password"
+                    android:inputType="textPassword" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/admin_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create User" />
+
+            <TextView
+                android:id="@+id/admin_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete User" />
+
+            <Button
+                android:id="@+id/admin_button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Open User List" />
+
+            <TextView
+                android:id="@+id/admin_textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create New Group" />
+
+            <EditText
+                android:id="@+id/admin_editText3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="New Group Name"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/admin_editText4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Description"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/admin_button3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create Group" />
+
+            <Button
+                android:id="@+id/admin_button4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Open Group List" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
