@@ -1,10 +1,12 @@
 package com.myexample.privateeventconnection;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -87,14 +89,85 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         holder.join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference reference = FirebaseDatabase.getInstance()
+                final DatabaseReference reference = FirebaseDatabase.getInstance()
                         .getReference("Users").child(uid).child("Groups")
                         .child(groupname);
+
+
+
                 if(holder.join.getText().toString().equals("Leave")){
-                        reference.child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                    FirebaseDatabase.getInstance().getReference().child("Groups").child(groupname).child("Events").child(token).addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            holder.join.setText("Join");
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Event event = dataSnapshot.child("EventInfo").getValue(Event.class);
+                            if(event != null){
+                                //current user is admin
+                                if(uid.equals(event.getAdmin())){
+                                    //prompt the dialog
+
+                                    AlertDialog.Builder altdial = new AlertDialog.Builder(mContext);
+                                    altdial.setMessage("You are the admin of this event. Do you want to dismiss?").setCancelable(false)
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+
+                                                    //delete this event information from all users
+                                                    deleteAllUsersEvents(groupname, token);
+
+                                                    //delete this event information from all groups
+                                                    FirebaseDatabase.getInstance().getReference().child("Groups").child(groupname).child("Events").child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                            //go to AfterLoginActivity
+                                                            Intent intent = new Intent(mContext, AfterLoginActivity.class);
+                                                            //set this activity to the top of stack, so users cannot go back to dismissed events
+                                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                            mContext.startActivity(intent);
+                                                        }
+                                                    });
+
+
+
+
+                                                }
+                                            })
+                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // do nothing
+                                                    dialog.cancel();
+                                                }
+                                            });
+
+                                    AlertDialog alertDialog = altdial.create();
+                                    alertDialog.setTitle("Default title");
+                                    alertDialog.show();
+
+
+
+                                }
+                                // current user is not admin
+                                else {
+                                    reference.child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            holder.join.setText("Join");
+                                        }
+                                    });
+
+                                }
+                            }
+
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
                         }
                     });
 
@@ -154,5 +227,29 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             join = itemView.findViewById(R.id.joinEvent);
 
         }
+    }
+
+    private void deleteAllUsersEvents(final String groupName, final String token) {
+
+        FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot user : snapshot.getChildren()) {
+                    if(user.child("Groups").child(groupName).getValue() != null){
+                        if(user.child("Groups").child(groupName).child(token).getValue() != null){
+                            user.child("Groups").child(groupName).child(token).getRef().removeValue();
+                        }
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
