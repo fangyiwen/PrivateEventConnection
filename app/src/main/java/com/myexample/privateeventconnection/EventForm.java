@@ -10,17 +10,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialAutoCompleteTextView;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -41,8 +45,10 @@ public class EventForm extends AppCompatActivity {
     MaterialAutoCompleteTextView myd;
     MaterialAutoCompleteTextView hourAndMinutes;
     Button submit_btn;
+    TextView title;
     DatabaseReference reference;
     DatabaseReference userreference;
+    DatabaseReference eventinforeference;
     Context context;
 
     @Override
@@ -59,17 +65,38 @@ public class EventForm extends AppCompatActivity {
         myd = findViewById(R.id.eventformdate);
         hourAndMinutes = findViewById(R.id.eventformtime);
         submit_btn = findViewById(R.id.formsubmit);
+        title = findViewById(R.id.eventformtitle);
         context = this;
 
         Intent intent = getIntent();
         final String groupName = intent.getStringExtra("groupName");
-        final String ts = intent.getStringExtra("ts");
-        final String eventname = intent.getStringExtra("eventname");
-        final String loc = intent.getStringExtra("location");
-        final String eventdate = intent.getStringExtra("eventdate");
-        final String eventtime = intent.getStringExtra("eventtime");
-        final String desc = intent.getStringExtra("description");
+        final String timestamp = intent.getStringExtra("ts");
+        if(!timestamp.isEmpty()){
+            reference = FirebaseDatabase.getInstance().getReference("Groups")
+                    .child(groupName).child("Events").child(timestamp).child("EventInfo");
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String eventname = snapshot.child("EventName").getValue().toString();
+                    String loc = snapshot.child("Location").getValue().toString();
+                    String time = snapshot.child("EventTime").getValue().toString();
+                    String desc = snapshot.child("Description").getValue().toString();
+                    String eventdate = time.split(", ")[0];
+                    String eventtime = time.split(", ")[1];
+                    title.setText("Modify Event");
+                    eventName.setText(eventname);
+                    location.setText(loc);
+                    myd.setText(eventdate);
+                    hourAndMinutes.setText(eventtime);
+                    description.setText(desc);
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
 
         reference = FirebaseDatabase.getInstance().getReference("Groups").child(groupName).child("Events");
         userreference = FirebaseDatabase.getInstance().getReference("Users").child(userID).child("Groups").child(groupName);
@@ -101,12 +128,16 @@ public class EventForm extends AppCompatActivity {
                     hashMap.put("Description", desc);
                     hashMap.put("Location", loc);
                     hashMap.put("EventTime", time);
+                    hashMap.put("Latitude", "40");
+                    hashMap.put("Longitude", "-100");
                     Date dt = new Date();
                     long t = dt.getTime();
-                    final String ts = new Timestamp(t).toString().replace("-", "").
+                    final String ts = timestamp.isEmpty() ? new Timestamp(t).toString().replace("-", "").
                             replace(" ", "").
                             replace(":", "").
-                            replace(".", "");
+                            replace(".", "") : timestamp;
+                    hashMap.put("EventToken", ts);
+
                     HashMap<String, String> users = new HashMap<>();
                     users.put(userID, "1");
                     reference.child(ts).child("EventUsers").setValue(users, new DatabaseReference.CompletionListener() {
@@ -115,7 +146,10 @@ public class EventForm extends AppCompatActivity {
                             if(error != null){
                                 Toast.makeText(context, "Event creation failed. Code 1", Toast.LENGTH_SHORT).show();
                             }else{
-                                reference.child(ts).child("EventInfo").setValue(hashMap, new DatabaseReference.CompletionListener() {
+                                Log.d("hashmappp", "" + hashMap.size());
+                                eventinforeference = FirebaseDatabase.getInstance().getReference("Groups").child(groupName).child("Events");
+                                eventinforeference.child(ts).child("EventInfo").setValue(hashMap, new DatabaseReference.CompletionListener() {
+
                                     @Override
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                         if(error != null){
@@ -124,9 +158,15 @@ public class EventForm extends AppCompatActivity {
                                             userreference.child(ts).child("EventInfo").setValue(hashMap, new DatabaseReference.CompletionListener() {
                                                 @Override
                                                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                                    Intent intent1 = new Intent(context, GroupInfoActivity.class);
-                                                    intent1.putExtra("groupname", groupName);
-                                                    startActivity(intent1);
+                                                    //if is from Groupinfoactivity then back to the event just created
+                                                    if(timestamp.isEmpty()){
+                                                        Intent intent1 = new Intent(context, EventActivity.class);
+                                                        intent1.putExtra("token", ts);
+                                                        intent1.putExtra("groupname", groupName);
+                                                        intent1.putExtra("buttontext", "Leave");
+                                                        startActivity(intent1);
+                                                    }
+                                                    // if is from the event, then back to the event
                                                     finish();
                                                 }
                                             });

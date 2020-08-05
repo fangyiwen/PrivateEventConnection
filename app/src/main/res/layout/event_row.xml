@@ -47,7 +47,13 @@
             android:layout_alignParentRight="true"
             android:id="@+id/admin_delUser"
             android:text="Join"/>
+
+
     </RelativeLayout>
+
+
+
+
 
 
 
