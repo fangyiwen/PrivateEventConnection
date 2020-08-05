@@ -36,7 +36,6 @@
         android:paddingLeft="5sp"
         android:paddingTop="5sp"
         android:paddingBottom="10sp"
-        android:fontFamily="serif"
         android:text="Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes (also known as modes of discourse), along with exposition, argumentation, and narration."
         android:id="@+id/groupDescription"/>
     <TextView
