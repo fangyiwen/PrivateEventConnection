@@ -71,5 +71,13 @@
 
     </LinearLayout>
 
+    <fragment
+        android:id="@+id/event_form_map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_alignParentBottom="true"
+        tools:context="com.myexample.privateeventconnection.MapsMarkerActivity" />
+
 
 </RelativeLayout>

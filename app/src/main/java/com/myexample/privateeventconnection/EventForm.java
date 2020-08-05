@@ -3,12 +3,20 @@ package com.myexample.privateeventconnection;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +26,15 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +54,8 @@ import java.util.Locale;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class EventForm extends AppCompatActivity {
+public class EventForm extends AppCompatActivity
+        implements OnMapReadyCallback {
 
     MaterialEditText eventName;
     MaterialEditText location;
@@ -51,10 +69,25 @@ public class EventForm extends AppCompatActivity {
     DatabaseReference eventinforeference;
     Context context;
 
+    // latitude and longitude
+    String latitude;
+    String longitude;
+
+    GoogleMap mMap;
+    Location myLocation;
+    boolean mLocationPermissionGranted = false;
+    private static final int MY_PERMISSIONS_REQUEST_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_form);
+
+        // Google map SDK
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.event_form_map);
+        mapFragment.getMapAsync(this);
+
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -71,7 +104,7 @@ public class EventForm extends AppCompatActivity {
         Intent intent = getIntent();
         final String groupName = intent.getStringExtra("groupName");
         final String timestamp = intent.getStringExtra("ts");
-        if(!timestamp.isEmpty()){
+        if (!timestamp.isEmpty()) {
             reference = FirebaseDatabase.getInstance().getReference("Groups")
                     .child(groupName).child("Events").child(timestamp).child("EventInfo");
             reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -111,25 +144,28 @@ public class EventForm extends AppCompatActivity {
                 String ddate = myd.getText().toString();
                 String hm = hourAndMinutes.getText().toString();
                 String time = ddate + ", " + hm;
-                if(name.isEmpty()){
+
+                if (name.isEmpty()) {
                     Toast.makeText(EventForm.this, "Event name is required!", Toast.LENGTH_SHORT).show();
-                }else if(loc.isEmpty()){
+                } else if (loc.isEmpty()) {
                     Toast.makeText(EventForm.this, "Location is required!", Toast.LENGTH_SHORT).show();
-                }else if(desc.isEmpty()){
+                } else if (desc.isEmpty()) {
                     Toast.makeText(EventForm.this, "Description is required!", Toast.LENGTH_SHORT).show();
-                }else if(ddate.isEmpty()){
+                } else if (ddate.isEmpty()) {
                     Toast.makeText(EventForm.this, "Date is required!", Toast.LENGTH_SHORT).show();
-                }else if(hm.isEmpty()){
+                } else if (hm.isEmpty()) {
                     Toast.makeText(EventForm.this, "Time is required!", Toast.LENGTH_SHORT).show();
-                }else{
+                } else if (latitude == null || longitude == null) {
+                    Toast.makeText(EventForm.this, "Long click to drag the map maker to the location!", Toast.LENGTH_SHORT).show();
+                } else {
                     final HashMap<String, String> hashMap = new HashMap<>();
                     hashMap.put("EventName", name);
                     hashMap.put("Admin", userID);
                     hashMap.put("Description", desc);
                     hashMap.put("Location", loc);
                     hashMap.put("EventTime", time);
-                    hashMap.put("Latitude", "40");
-                    hashMap.put("Longitude", "-100");
+                    hashMap.put("Latitude", latitude);
+                    hashMap.put("Longitude", longitude);
                     Date dt = new Date();
                     long t = dt.getTime();
                     final String ts = timestamp.isEmpty() ? new Timestamp(t).toString().replace("-", "").
@@ -143,23 +179,23 @@ public class EventForm extends AppCompatActivity {
                     reference.child(ts).child("EventUsers").setValue(users, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                            if(error != null){
+                            if (error != null) {
                                 Toast.makeText(context, "Event creation failed. Code 1", Toast.LENGTH_SHORT).show();
-                            }else{
+                            } else {
                                 Log.d("hashmappp", "" + hashMap.size());
                                 eventinforeference = FirebaseDatabase.getInstance().getReference("Groups").child(groupName).child("Events");
                                 eventinforeference.child(ts).child("EventInfo").setValue(hashMap, new DatabaseReference.CompletionListener() {
 
                                     @Override
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                        if(error != null){
+                                        if (error != null) {
                                             Toast.makeText(context, "Event creation failed. Code 2", Toast.LENGTH_SHORT).show();
-                                        }else{
+                                        } else {
                                             userreference.child(ts).child("EventInfo").setValue(hashMap, new DatabaseReference.CompletionListener() {
                                                 @Override
                                                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                                     //if is from Groupinfoactivity then back to the event just created
-                                                    if(timestamp.isEmpty()){
+                                                    if (timestamp.isEmpty()) {
                                                         Intent intent1 = new Intent(context, EventActivity.class);
                                                         intent1.putExtra("token", ts);
                                                         intent1.putExtra("groupname", groupName);
@@ -176,7 +212,6 @@ public class EventForm extends AppCompatActivity {
                             }
                         }
                     });
-
                 }
             }
         });
@@ -188,7 +223,7 @@ public class EventForm extends AppCompatActivity {
                 String AM_PM;
                 int am_pm;
 
-                hourAndMinutes.setText(String.format("%02d:%02d" , hourOfDay, minute));
+                hourAndMinutes.setText(String.format("%02d:%02d", hourOfDay, minute));
 //                myCalendar.set(Calendar.HOUR, hourOfDay);
 //                myCalendar.set(Calendar.MINUTE, minute);
 
@@ -234,5 +269,175 @@ public class EventForm extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         myd.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setZoomControlsEnabled(true);
+
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker maker) {
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker maker) {
+                LatLng point = maker.getPosition();
+                latitude = Double.toString(point.latitude);
+                longitude = Double.toString(point.longitude);
+            }
+
+            @Override
+            public void onMarkerDrag(Marker M0) {
+            }
+        });
+
+        // Keep these two at bottom
+        updateLocationUI();
+        getDeviceLocation();
+    }
+
+    private void updateLocationUI() {
+        if (mMap == null) {
+            return;
+        }
+        try {
+            if (mLocationPermissionGranted) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            } else {
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                myLocation = null;
+                getLocationPermission();
+            }
+        } catch (Exception e) {
+            Toast.makeText(context, "Exception: e.getMessage()",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getDeviceLocation() {
+        try {
+            if (mLocationPermissionGranted) {
+                LocationManager myLocationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+                String currentProvider;
+                // Get enabled location providers
+                List<String> myProviders = myLocationManager.getProviders(true);
+
+                // Choose appropriate location providers, the preference can be changed if necessary
+                if (myProviders.contains(LocationManager.GPS_PROVIDER)) {
+                    currentProvider = LocationManager.GPS_PROVIDER;
+                } else if (myProviders.contains(LocationManager.NETWORK_PROVIDER)) {
+                    currentProvider = LocationManager.NETWORK_PROVIDER;
+                } else {
+                    // Enable location providers in the Android Setting if no location providers found
+                    Toast.makeText(context, "No location providers! " +
+                            "Enable location providers!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    intent.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                    return;
+                }
+
+                myLocation = myLocationManager.getLastKnownLocation(currentProvider);
+                // Automatically updates the current location
+                myLocationManager.requestLocationUpdates(currentProvider,
+                        300000, 50, myListener);
+
+                if (myLocation != null) {
+                    // Set the map's camera position to the current location of the device.
+                    display(myLocation);
+                }
+            } else {
+                Toast.makeText(context, "Current location is null. Using defaults.",
+                        Toast.LENGTH_SHORT).show();
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(37.2643358, -121.787609), 1));
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            }
+        } catch (Exception e) {
+            Toast.makeText(context, "Exception: e.getMessage()",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    Marker myLocationMarker;
+
+    private void display(Location location) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(location.getLatitude(),
+                        location.getLongitude()), 1));
+        if (myLocationMarker != null) {
+            myLocationMarker.remove();
+        }
+        myLocationMarker = mMap.addMarker(new MarkerOptions().
+                position(new LatLng(location.getLatitude(),
+                        location.getLongitude())).title("Me").draggable(true));
+    }
+
+    // Listen to the location updates
+    LocationListener myListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            display(location);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    // getLocationPermission
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(EventForm.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                EventForm.this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(EventForm.this, Manifest.permission.INTERNET)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(EventForm.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET},
+                    MY_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+    // Handle the permissions request response
+    // Code is cited from https://developer.android.com/training/permissions/requesting
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        mLocationPermissionGranted = false;
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CODE: {
+                if (grantResults.length == 3
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true;
+                } else {
+                    // Permission denied
+                    Toast.makeText(context, "Permission denied!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        updateLocationUI();
     }
 }

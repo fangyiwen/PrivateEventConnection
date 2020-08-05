@@ -31,6 +31,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -259,20 +260,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        LatLng sydney = new LatLng(-33.852, 151.211);
-        googleMap.addMarker(new MarkerOptions()
-                .position(sydney)
-                .title("Marker in Sydney"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(-50.852, 151.211))
-                .title("Marker in Sydney123"));
-
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.2643358, -121.787609))
-                .title("Marker in San Jose"));
-
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(37.3453283, -121.9986238))
-                .title("Marker in museum"));
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setZoomControlsEnabled(true);
         // Keep these two at bottom
         updateLocationUI();
         getDeviceLocation();
