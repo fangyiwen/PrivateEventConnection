@@ -7,16 +7,17 @@
         android:layout_marginLeft="20dp"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:background="#e80909"
+        android:background="@color/ivory"
         android:gravity="center"
         >
 
         <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/groupname"
-        android:text="GroupX"
-        android:textSize="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/groupname"
+            android:textStyle="bold"
+            android:text="GroupX"
+            android:textSize="25dp"
         />
 
 
