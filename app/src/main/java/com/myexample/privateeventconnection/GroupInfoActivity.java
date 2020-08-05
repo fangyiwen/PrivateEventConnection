@@ -119,7 +119,13 @@ public class GroupInfoActivity extends AppCompatActivity {
                     Collections.sort(mEvents, new Comparator<Event>() {
                         @Override
                         public int compare(Event o1, Event o2) {
-                            return o2.getEventTime().compareTo(o1.getEventTime());
+                            String[] dt1 = o1.getEventTime().split(", ");
+                            String[] dt2 = o2.getEventTime().split(", ");
+                            String[] date1 = dt1[0].split("/");
+                            String[] date2 = dt2[0].split("/");
+                            String dateandtime1 = date1[2]+date1[0]+date1[1]+dt1[1];
+                            String dateandtime2 = date2[2]+date2[0]+date2[1]+dt2[1];
+                            return dateandtime2.compareTo(dateandtime1);
                         }
                     });
                 }

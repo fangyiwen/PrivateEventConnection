@@ -151,8 +151,7 @@ public class EventActivity extends AppCompatActivity {
                                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    //删除当前user下的event信息
-                                                    //reference.child(token).removeValue();
+
 
                                                     //delete this event information from all users
                                                     deleteAllUsersEvents(groupName, token);
@@ -225,6 +224,9 @@ public class EventActivity extends AppCompatActivity {
                     mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+
                             //check null
                             if(snapshot.child("EventInfo").getValue() != null){
                                 Event event = snapshot.child("EventInfo").getValue(Event.class);
@@ -244,6 +246,7 @@ public class EventActivity extends AppCompatActivity {
                                     }
                                 });
                             }
+
 
                         }
 
