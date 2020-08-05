@@ -143,7 +143,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                                             });
 
                                     AlertDialog alertDialog = altdial.create();
-                                    alertDialog.setTitle("Default title");
+                                    alertDialog.setTitle("Warning");
                                     alertDialog.show();
 
 

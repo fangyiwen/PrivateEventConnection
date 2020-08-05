@@ -184,7 +184,7 @@ public class EventActivity extends AppCompatActivity {
                                             });
 
                                     AlertDialog alertDialog = altdial.create();
-                                    alertDialog.setTitle("Default title");
+                                    alertDialog.setTitle("Warning");
                                     alertDialog.show();
 
 
