@@ -86,7 +86,11 @@ public class AfterLoginActivity extends AppCompatActivity {
                 mAuth.signOut();
                 // Go back to LoginActivity
                 Intent intent = new Intent(AfterLoginActivity.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+
+
+
         }
         return super.onOptionsItemSelected(item);
     }
