@@ -130,14 +130,16 @@ public class EventActivity extends AppCompatActivity {
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String name = snapshot.child("EventName").getValue().toString();
-                String t = snapshot.child("EventTime").getValue().toString();
-                String loc = snapshot.child("Location").getValue().toString();
-                String desc = snapshot.child("Description").getValue().toString();
-                eventname.setText(name);
-                time.setText("Time: " + t);
-                location.setText("Location: " + loc);
-                description.setText(desc);
+                if(snapshot.exists()){
+                    String name = snapshot.child("EventName").getValue().toString();
+                    String t = snapshot.child("EventTime").getValue().toString();
+                    String loc = snapshot.child("Location").getValue().toString();
+                    String desc = snapshot.child("Description").getValue().toString();
+                    eventname.setText(name);
+                    time.setText("Time: " + t);
+                    location.setText("Location: " + loc);
+                    description.setText(desc);
+                }
             }
 
             @Override

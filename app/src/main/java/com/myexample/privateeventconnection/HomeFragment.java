@@ -187,6 +187,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 Intent intent = new Intent(getContext(), EventActivity.class);
                 intent.putExtra("token", homeEvent.getToken());
                 intent.putExtra("groupname", homeEvent.getGroupname());
+                intent.putExtra("buttontext", "Leave");
                 startActivity(intent);
             }
         });
@@ -202,7 +203,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 eventArray.clear();
                 for (DataSnapshot group : dataSnapshot.getChildren()) {
-                    if (!group.hasChild("Events")) {
+                    if (!group.hasChildren()) {
                         continue;
                     }
                     for (DataSnapshot event : group.getChildren()) {
