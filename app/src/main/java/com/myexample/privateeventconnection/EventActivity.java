@@ -59,7 +59,7 @@ public class EventActivity extends AppCompatActivity {
         final String btntext = intent.getStringExtra("buttontext");
         mAuth = FirebaseAuth.getInstance();
         uid = mAuth.getCurrentUser().getUid();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance().getReference("Users").child(uid);
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,10 +75,10 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean admin = false;
-                if(snapshot.child("Users").child(uid).child("Admin").getValue().toString().equals("1")){
+                if(snapshot.child("Admin").getValue(Double.class).equals(1)){
                     admin = true;
                 }
-                if(!snapshot.child("Groups").child(groupName).child("Events").child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
+                if(snapshot.child("Groups").child(groupName).hasChildren() && snapshot.child("Groups").child(groupName).child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
                     admin = true;
                 }
                 if(!admin){
