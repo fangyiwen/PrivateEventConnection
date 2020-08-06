@@ -70,6 +70,7 @@ public class EventActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        // TODO hahahahah
         //TODO 判断admin token 和 uid 是否一致 -> edit button 显示
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
