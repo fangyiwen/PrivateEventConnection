@@ -182,10 +182,11 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 admin = false;
-                if(snapshot.child("Users").child(uid).child("Admin").getValue().toString().equals("1")){
+                //users.uid.
+                if(snapshot.child("Admin").getValue(Double.class).equals(1)){
                     admin = true;
                 }
-                if(snapshot.child("Groups").child(groupName).child("Events").child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
+                if(snapshot.child("Groups").hasChildren() && snapshot.child("Groups").child(groupName).child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
                     admin = true;
                 }
                 if(!admin){

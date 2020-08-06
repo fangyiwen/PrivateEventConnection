@@ -23,16 +23,7 @@
         android:textStyle="bold"
         android:text="EventX"
         />
-    <ImageButton
-        android:layout_width="40sp"
-        android:layout_height="40sp"
-        android:layout_alignParentRight="false"
-        android:background="@drawable/edit_foreground"
-        android:layout_alignBottom="@+id/eventname"
-        android:id="@+id/edit"
-        android:layout_alignStart="@+id/eventjoin"
 
-        android:text="edit"/>
     <Button
         android:layout_width="wrap_content"
         android:text="Leave"

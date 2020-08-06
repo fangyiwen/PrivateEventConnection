@@ -220,12 +220,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         public ViewHolder(View itemView){
             super(itemView);
-            join = itemView.findViewById(R.id.joinEvent);
+            join = itemView.findViewById(R.id.jjjoin);
             eventName = itemView.findViewById(R.id.eventTitle);
             location = itemView.findViewById(R.id.eventloc);
             time = itemView.findViewById(R.id.eventtime);
-            join = itemView.findViewById(R.id.joinEvent);
-
         }
     }
 
