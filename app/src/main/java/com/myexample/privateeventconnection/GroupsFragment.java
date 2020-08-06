@@ -83,7 +83,10 @@ public class GroupsFragment extends Fragment {
                 groupNames.clear();
                 // Iterate through all groups and get their names. Add names to groupNames arraylist.
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    groupNames.add(child.getKey());
+                    if(!child.getKey().equals("DefaultGroup")){
+                        groupNames.add(child.getKey());
+                    }
+
                 }
 
                 // Different thread here. We need to notify the gridview thread to display group information
