@@ -138,6 +138,7 @@ public class EventForm extends AppCompatActivity
         submit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String name = eventName.getText().toString();
                 String loc = location.getText().toString();
                 String desc = description.getText().toString();

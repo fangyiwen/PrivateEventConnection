@@ -1,112 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".EventActivity">
-
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/eventsummary">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/eventname"
-        android:textColor="#000000"
-        android:layout_gravity="center"
-        android:layout_centerHorizontal="true"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:text="EventX"
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:text="Leave"
-        android:id="@+id/eventjoin"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/eventname"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Event Summary"
-        android:gravity="center"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorpurple"
-        android:layout_alignTop="@+id/eventjoin"
-        android:layout_alignBottom="@+id/eventjoin"
-        android:layout_below="@+id/eventname"
-        android:id="@+id/desctitle"
-        android:layout_marginLeft="5dp"
-        />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/desctitle"
-            android:layout_marginLeft="5dp"
-            android:textSize="20sp"
-            android:textColor="#000000"
-            android:text="Time: 11/1/2020"
-            android:id="@+id/eventtime"/>
-        <ImageButton
-            android:layout_width="40sp"
-            android:layout_height="40sp"
-            android:layout_alignParentRight="false"
-            android:background="@drawable/edit_foreground"
-            android:layout_alignBottom="@+id/eventtime"
-            android:id="@+id/edit"
-            android:layout_alignRight="@+id/eventtime"
-            android:text="edit"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/eventtime"
-            android:layout_marginLeft="5dp"
-            android:textColor="#000000"
-            android:text="Location: 123 Parkway, San Jose"
-            android:textSize="20sp"
-            android:id="@+id/eventlocation"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/eventlocation"
-            android:layout_marginLeft="5dp"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:text="About this event:"
-            android:id="@+id/aboutevent"/>
-
-    <TextView
+    >
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/aboutevent"
-        android:layout_marginLeft="5dp"
-        android:textColor="#000000"
-        android:paddingBottom="20sp"
-        android:textSize="20dp"
-        android:text="Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes (also known as modes of discourse), along with exposition, argumentation, and narration."
-        android:id="@+id/desc"/>
-
-    <ImageButton
-        android:layout_width="45sp"
-        android:layout_height="45sp"
-        android:text="Chat"
-        android:id="@+id/chat"
-        android:src="@drawable/message"
-        android:background="@drawable/chat_bubble_received"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/desc"/>
-
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".EventActivity">
 
 
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/eventsummary">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/eventname"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:layout_centerHorizontal="true"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:text="EventX"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:text="Leave"
+                android:id="@+id/eventjoin"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/eventname"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Event Summary"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorpurple"
+                android:layout_alignTop="@+id/eventjoin"
+                android:layout_alignBottom="@+id/eventjoin"
+                android:layout_below="@+id/eventname"
+                android:id="@+id/desctitle"
+                android:layout_marginLeft="5dp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/desctitle"
+                android:layout_marginLeft="5dp"
+                android:textSize="20sp"
+                android:textColor="#000000"
+                android:text="Time: 11/1/2020"
+                android:id="@+id/eventtime"/>
+            <ImageButton
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:layout_alignParentRight="false"
+                android:background="@drawable/edit_foreground"
+                android:layout_alignBottom="@+id/eventtime"
+                android:id="@+id/edit"
+                android:layout_alignRight="@+id/eventtime"
+                android:text="edit"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/eventtime"
+                android:layout_marginLeft="5dp"
+                android:textColor="#000000"
+                android:text="Location: 123 Parkway, San Jose"
+                android:textSize="20sp"
+                android:id="@+id/eventlocation"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/eventlocation"
+                android:layout_marginLeft="5dp"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:text="About this event:"
+                android:id="@+id/aboutevent"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/aboutevent"
+                android:layout_marginLeft="5dp"
+                android:textColor="#000000"
+                android:paddingBottom="20sp"
+                android:textSize="20dp"
+                android:text="Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes (also known as modes of discourse), along with exposition, argumentation, and narration."
+                android:id="@+id/desc"/>
+
+            <ImageButton
+                android:layout_width="45sp"
+                android:layout_height="45sp"
+                android:text="Chat"
+                android:id="@+id/chat"
+                android:src="@drawable/message"
+                android:background="@drawable/chat_bubble_received"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/desc"/>
+
+        </RelativeLayout>
 
 
+    </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

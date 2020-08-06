@@ -14,11 +14,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RemoveUserFromGroupActivity"></activity>
-        <activity android:name=".AddUserToGroupActivity" />
-        <activity android:name=".GroupOperationActivity" />
-        <activity android:name=".DeleteUserActivity" />
-        <activity android:name=".AdminActivity" />
+        <activity
+            android:name=".RemoveUserFromGroupActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".AddUserToGroupActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".GroupOperationActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".DeleteUserActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".AdminActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -27,20 +37,37 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBKWBA9PcZClf29nbBm6eItRzJVIDkpAfE" />
 
-        <activity android:name=".EventForm" />
-        <activity android:name=".EventActivity" />
-        <activity android:name=".MessageListAdapter" />
-        <activity android:name=".MessageActivity" />
+        <activity
+            android:name=".EventForm"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".EventActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".MessageListAdapter"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".MessageActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
         <activity
             android:name=".EventsAdapter"
-            tools:ignore="Instantiatable" />
-        <activity android:name=".GroupInfoActivity" />
+            tools:ignore="Instantiatable"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
+        <activity
+            android:name=".GroupInfoActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
         <activity
             android:name=".AfterLoginActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoginActivity">
+        <activity
+            android:name=".RegisterActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
