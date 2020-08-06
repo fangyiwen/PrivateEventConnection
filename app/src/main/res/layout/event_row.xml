@@ -13,8 +13,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/joinEvent"
-            android:layout_alignBottom="@+id/joinEvent"
+            android:layout_alignTop="@+id/admin_delUser"
+            android:layout_alignBottom="@+id/admin_delUser"
             android:layout_alignParentLeft="true"
             android:id="@+id/eventTitle"
             android:textSize="22sp"
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:id="@+id/admin_delUser"
+            android:id="@+id/jjjoin"
             android:text="Join"/>
 
 

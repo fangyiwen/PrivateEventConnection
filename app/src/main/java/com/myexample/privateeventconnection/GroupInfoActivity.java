@@ -37,7 +37,6 @@ public class GroupInfoActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private DatabaseReference reference;
     private DatabaseReference userReference;
-    private Button joinorleave;
     private FirebaseAuth mAuth;
     private Parcelable recyclerViewState;
     RecyclerView recyclerView;
@@ -56,7 +55,6 @@ public class GroupInfoActivity extends AppCompatActivity {
         groupnametx = findViewById(R.id.groupname);
         groupDescription = findViewById(R.id.groupDescription);
         createEvent = findViewById(R.id.createEvent);
-        joinorleave = findViewById(R.id.joinEvent);
         joined = new HashSet<>();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
