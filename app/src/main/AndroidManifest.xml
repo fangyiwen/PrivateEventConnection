@@ -14,10 +14,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CreateGroupActivity"></activity>
-        <activity android:name=".CreateUserActivity" />
-        <activity android:name=".UpdatePasswordActivity" />
-        <activity android:name=".UpdateNameActivity" />
+        <activity
+            android:name=".CreateGroupActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".CreateUserActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".UpdatePasswordActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <activity
+            android:name=".UpdateNameActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
         <activity
             android:name=".RemoveUserFromGroupActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />

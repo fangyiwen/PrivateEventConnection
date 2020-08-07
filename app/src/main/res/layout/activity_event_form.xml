@@ -1,83 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingHorizontal="10dp"
+    android:paddingVertical="10dp"
     tools:context=".EventForm">
 
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="16dp"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create Event"
-            android:textSize="20sp"
-            android:id="@+id/eventformtitle"
-            android:textStyle="bold"/>
+        android:layout_height="match_parent">
 
-
-
-        <com.rengwuxian.materialedittext.MaterialEditText
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/eventformname"
-            android:layout_marginTop="10dp"
-            android:hint="Event Name"/>
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/eventformlocation"
-            android:layout_marginTop="10dp"
-            android:hint="Location"/>
+            <TextView
+                android:id="@+id/eventformtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Event"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-        <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/eventformdate"
-            android:focusable="false"
-            android:layout_marginTop="10dp"
-            android:hint="Event Date"/>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/eventformname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Event Name" />
 
-        <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/eventformtime"
-            android:focusable="false"
-            android:layout_marginTop="10dp"
-            android:hint="Event Time"/>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/eventformlocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Location" />
 
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/eventformdesc"
-            android:layout_marginTop="10dp"
-            android:hint="Description"/>
+            <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
+                android:id="@+id/eventformdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:focusable="false"
+                android:hint="Event Date" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Submit"
-            android:id="@+id/formsubmit"
-            android:background="@color/colorPrimaryDark"
-            android:layout_marginTop="10dp"
-            android:textColor="#fff"/>
+            <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
+                android:id="@+id/eventformtime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:focusable="false"
+                android:hint="Event Time" />
 
-    </LinearLayout>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/eventformdesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Description" />
 
-    <fragment
-        android:id="@+id/event_form_map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_alignParentBottom="true"
-        tools:context="com.myexample.privateeventconnection.MapsMarkerActivity" />
+            <Button
+                android:id="@+id/formsubmit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorPrimaryDark"
+                android:text="Submit"
+                android:textColor="#fff" />
 
+            <fragment
+                android:id="@+id/event_form_map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="10dp"
+                tools:context="com.myexample.privateeventconnection.MapsMarkerActivity" />
 
-</RelativeLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -278,20 +278,13 @@ public class EventForm extends AppCompatActivity
         UiSettings uiSettings = mMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
 
-        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMarkerDragStart(Marker maker) {
-            }
-
-            @Override
-            public void onMarkerDragEnd(Marker maker) {
-                LatLng point = maker.getPosition();
+            public void onMapClick(LatLng point) {
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions().position(point));
                 latitude = Double.toString(point.latitude);
                 longitude = Double.toString(point.longitude);
-            }
-
-            @Override
-            public void onMarkerDrag(Marker M0) {
             }
         });
 
@@ -376,7 +369,7 @@ public class EventForm extends AppCompatActivity
         }
         myLocationMarker = mMap.addMarker(new MarkerOptions().
                 position(new LatLng(location.getLatitude(),
-                        location.getLongitude())).title("Me").draggable(true));
+                        location.getLongitude())));
     }
 
     // Listen to the location updates
