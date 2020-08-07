@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -81,11 +82,11 @@ public class GroupOperationActivity extends AppCompatActivity {
                     view = LayoutInflater.from(getContext()).inflate(resourceId, null);
 
                     viewHolder = new ViewHolder();
-                    viewHolder.groupName = view.findViewById(R.id.admin_textView_groupName);
-                    viewHolder.description = view.findViewById(R.id.admin_textView_groupDescription);
-                    viewHolder.deleteGroupButton = view.findViewById(R.id.admin_delGroup);
-                    viewHolder.addUserButton = view.findViewById(R.id.admin_addUserInGroup);
-                    viewHolder.removeUserButton = view.findViewById(R.id.admin_removeUserFromGroup);
+                    viewHolder.groupName = view.findViewById(R.id.admin_textView_groupName_ui);
+                    viewHolder.description = view.findViewById(R.id.admin_textView_groupDescription_ui);
+                    viewHolder.deleteGroupButton = view.findViewById(R.id.admin_delGroup_ui);
+                    viewHolder.addUserButton = view.findViewById(R.id.admin_addUserInGroup_ui);
+                    viewHolder.removeUserButton = view.findViewById(R.id.admin_removeUserFromGroup_ui);
 
                     // Default Group should never be operated.
                     if (groupArray.get(position).getGroupName().equals("DefaultGroup")) {
@@ -107,7 +108,6 @@ public class GroupOperationActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         final String groupName = groupArray.get(position).getGroupName();
-                        final String description = groupArray.get(position).getDescription();
                         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -165,13 +165,13 @@ public class GroupOperationActivity extends AppCompatActivity {
             class ViewHolder {
                 TextView groupName;
                 TextView description;
-                Button deleteGroupButton;
-                Button addUserButton;
-                Button removeUserButton;
+                ImageView deleteGroupButton;
+                ImageView addUserButton;
+                ImageView removeUserButton;
             }
         }
 
-        final GroupAdapter adapter = new GroupAdapter(this, R.layout.admin_group_row, groupArray);
+        final GroupAdapter adapter = new GroupAdapter(this, R.layout.admin_group_row_design_ui, groupArray);
         final ListView listView = findViewById(R.id.admin_listView_groupOperation);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -181,6 +181,9 @@ public class GroupOperationActivity extends AppCompatActivity {
                 groupArray.clear();
                 for (DataSnapshot kv : dataSnapshot.getChildren()) {
                     String groupName = kv.getKey();
+                    if (groupName.equals("DefaultGroup")) {
+                        continue;
+                    }
                     String description = kv.child("GroupInfo").child("Description").getValue(String.class);
                     groupArray.add(new Group(groupName, description));
                 }

@@ -36,8 +36,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -58,6 +56,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private DatabaseReference mDatabase;
     boolean mLocationPermissionGranted = false;
     private static final int MY_PERMISSIONS_REQUEST_CODE = 1;
+    private TextView textViewHello;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -67,6 +66,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.home_fragment, container, false);
+
+        textViewHello = view.findViewById(R.id.home_textView_hello);
 
         // Google map SDK
         // https://developers.google.com/maps/documentation/android-sdk/map-with-marker
@@ -195,6 +196,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         String uid = currentUser.getUid();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        // Show name
+        mDatabase.child("Users").child(uid).child("Name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                textViewHello.setText("Hello " + dataSnapshot.getValue(String.class) + "!");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
         mDatabase.child("Users").child(uid).child("Groups").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

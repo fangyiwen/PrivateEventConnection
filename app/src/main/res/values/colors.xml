@@ -13,4 +13,5 @@
     <color name="grey">#D3D3D3</color>
     <color name="orange">#FFA500</color>
 
+    <color name="imageBorderColor">#13D3B4</color>
 </resources>

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -109,9 +110,9 @@ public class AddUserToGroupActivity extends AppCompatActivity {
                 viewHolder.email.setText(user.getEmail());
                 viewHolder.name.setText(user.getName());
                 if (operation) {
-                    viewHolder.deleteButton.setText("Add");
+                    viewHolder.deleteButton.setImageResource(R.drawable.baseline_group_add_24);
                 } else {
-                    viewHolder.deleteButton.setText("Remove");
+                    viewHolder.deleteButton.setImageResource(R.drawable.baseline_person_remove_24);
                     if (userArray.get(position).getUidDelete().equals(uid)) {
                         viewHolder.deleteButton.setVisibility(View.GONE);
                     }
@@ -146,7 +147,7 @@ public class AddUserToGroupActivity extends AppCompatActivity {
             class ViewHolder {
                 TextView email;
                 TextView name;
-                Button deleteButton;
+                ImageView deleteButton;
             }
         }
 

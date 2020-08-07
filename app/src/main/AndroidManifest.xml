@@ -14,6 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".CreateGroupActivity"></activity>
+        <activity android:name=".CreateUserActivity" />
+        <activity android:name=".UpdatePasswordActivity" />
+        <activity android:name=".UpdateNameActivity" />
         <activity
             android:name=".RemoveUserFromGroupActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
@@ -25,9 +29,6 @@
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
         <activity
             android:name=".DeleteUserActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
-        <activity
-            android:name=".AdminActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
 
         <meta-data
@@ -51,8 +52,8 @@
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
         <activity
             android:name=".EventsAdapter"
-            tools:ignore="Instantiatable"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".GroupInfoActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />

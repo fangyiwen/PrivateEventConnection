@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,9 +40,8 @@ public class InfoFragment extends Fragment {
     private InfoViewModel mViewModel;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private TextView emailTextView, currentNameTextView;
-    private EditText newNameEditText, newPasswordEditText, oldPasswordEditText;
-    private Button updateName, updatePassword, adminButton;
+    private TextView currentNameTextView;
+    private LinearLayout adminContainer, updateName, updatePassword, createUser, deleteUser, createGroup, editGroup;
     private String uid;
     private FirebaseUser currentUser;
 
@@ -53,16 +53,15 @@ public class InfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        final View view = inflater.inflate(R.layout.info_fragment, container, false);
-
-        emailTextView = view.findViewById(R.id.yf_textView3);
-        newNameEditText = view.findViewById(R.id.yf_editText);
-        newPasswordEditText = view.findViewById(R.id.yf_editText2);
-        currentNameTextView = view.findViewById(R.id.yf_textView7);
-        oldPasswordEditText = view.findViewById(R.id.yf_editText3);
-        updateName = view.findViewById(R.id.yf_button);
-        updatePassword = view.findViewById(R.id.yf_button2);
-        adminButton = view.findViewById(R.id.yf_button3);
+        final View view = inflater.inflate(R.layout.info_fragment_design_ui, container, false);
+        currentNameTextView = view.findViewById(R.id.yf_textView7_ui);
+        updatePassword = view.findViewById(R.id.yf_linearLayout_updatePassword);
+        updateName = view.findViewById(R.id.yf_linearLayout_updateName);
+        adminContainer = view.findViewById(R.id.info_admin_container);
+        createUser = view.findViewById(R.id.yf_linearLayout_createUser);
+        deleteUser = view.findViewById(R.id.yf_linearLayout_deleteUser);
+        createGroup = view.findViewById(R.id.yf_linearLayout_createGroup);
+        editGroup = view.findViewById(R.id.yf_linearLayout_editGroup);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -74,9 +73,9 @@ public class InfoFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null && dataSnapshot.getValue(Double.class) != 0) {
-                    adminButton.setEnabled(true);
+                    adminContainer.setVisibility(View.VISIBLE);
                 } else {
-                    adminButton.setEnabled(false);
+                    adminContainer.setVisibility(View.GONE);
                 }
             }
 
@@ -85,24 +84,11 @@ public class InfoFragment extends Fragment {
             }
         });
 
-        adminButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), AdminActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        // Show email
-        if (currentUser != null) {
-            emailTextView.setText("Email: " + currentUser.getEmail());
-        }
-
         // Show name
         mDatabase.child("Users").child(uid).child("Name").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                currentNameTextView.setText("Current Nick Name: " + dataSnapshot.getValue(String.class));
+                currentNameTextView.setText("Hello " + dataSnapshot.getValue(String.class) + "!");
             }
 
             @Override
@@ -114,69 +100,53 @@ public class InfoFragment extends Fragment {
         updateName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateName.setEnabled(false);
-                updateName.setText("Updating...");
-                final String newName = newNameEditText.getText().toString();
-                if (newName.trim().equals("")) {
-                    updateName.setText("Update Nick Name");
-                    updateName.setEnabled(true);
-                    Toast.makeText(getContext(), "New nick name must be at least one character with no Leading and trailing white spaces.",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                mDatabase.child("Users").child(uid).child("Name").setValue(newName);
-                Snackbar.make(view, "Updating finished", Snackbar.LENGTH_SHORT).show();
-                updateName.setText("Update Nick Name");
-                newNameEditText.setText("");
-                updateName.setEnabled(true);
+                Intent intent = new Intent(getContext(), UpdateNameActivity.class);
+                startActivity(intent);
             }
         });
-
 
         // Update password
         updatePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updatePassword.setEnabled(false);
-                updatePassword.setText("Updating...");
-                final String newPassword = newPasswordEditText.getText().toString();
-                if (newPassword.length() < 6 || !newPassword.replaceAll("\\s", "").equals(newPassword)) {
-                    updatePassword.setText("Update Password");
-                    updatePassword.setEnabled(true);
-                    Toast.makeText(getContext(), "New password must be at least six characters with no white spaces.",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                Intent intent = new Intent(getContext(), UpdatePasswordActivity.class);
+                startActivity(intent);
+            }
+        });
 
-                AuthCredential credential = EmailAuthProvider
-                        .getCredential(currentUser.getEmail(), oldPasswordEditText.getText().toString());
-                currentUser.reauthenticate(credential)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    currentUser.updatePassword(newPassword)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Snackbar.make(view, "Password updating successful", Snackbar.LENGTH_SHORT).show();
-                                                        mDatabase.child("Users").child(uid).child("Password").setValue(newPassword);
-                                                    } else {
-                                                        Snackbar.make(view, "Password updating failed", Snackbar.LENGTH_SHORT).show();
-                                                    }
-                                                    newPasswordEditText.setText("");
-                                                    oldPasswordEditText.setText("");
-                                                    updatePassword.setText("Update Password");
-                                                    updatePassword.setEnabled(true);
-                                                }
-                                            });
-                                } else {
-                                    Snackbar.make(view, "Authentication failed", Snackbar.LENGTH_SHORT).show();
-                                    updatePassword.setEnabled(true);
-                                }
-                            }
-                        });
+        // Create user account
+        createUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CreateUserActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Delete user account
+        deleteUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), DeleteUserActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Create group
+        createGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CreateGroupActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Edit group
+        editGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), GroupOperationActivity.class);
+                startActivity(intent);
             }
         });
         return view;

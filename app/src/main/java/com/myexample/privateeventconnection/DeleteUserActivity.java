@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -127,7 +128,6 @@ public class DeleteUserActivity extends AppCompatActivity {
 
                 viewHolder.email.setText(user.getEmail());
                 viewHolder.name.setText(user.getName());
-                viewHolder.deleteButton.setText("Delete");
 
                 // Delete from database
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -167,7 +167,7 @@ public class DeleteUserActivity extends AppCompatActivity {
             class ViewHolder {
                 TextView email;
                 TextView name;
-                Button deleteButton;
+                ImageView deleteButton;
             }
         }
 
