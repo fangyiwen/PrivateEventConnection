@@ -75,7 +75,6 @@ public class EventForm extends AppCompatActivity
 
     GoogleMap mMap;
     Location myLocation;
-    boolean mLocationPermissionGranted = false;
     private static final int MY_PERMISSIONS_REQUEST_CODE = 1;
 
     @Override
@@ -288,73 +287,54 @@ public class EventForm extends AppCompatActivity
             }
         });
 
-        // Keep these two at bottom
-        updateLocationUI();
+        // Keep at bottom
         getDeviceLocation();
-    }
-
-    private void updateLocationUI() {
-        if (mMap == null) {
-            return;
-        }
-        try {
-            if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                myLocation = null;
-                getLocationPermission();
-            }
-        } catch (Exception e) {
-            Toast.makeText(context, "Exception: e.getMessage()",
-                    Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void getDeviceLocation() {
         try {
-            if (mLocationPermissionGranted) {
-                LocationManager myLocationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-                String currentProvider;
-                // Get enabled location providers
-                List<String> myProviders = myLocationManager.getProviders(true);
-
-                // Choose appropriate location providers, the preference can be changed if necessary
-                if (myProviders.contains(LocationManager.GPS_PROVIDER)) {
-                    currentProvider = LocationManager.GPS_PROVIDER;
-                } else if (myProviders.contains(LocationManager.NETWORK_PROVIDER)) {
-                    currentProvider = LocationManager.NETWORK_PROVIDER;
-                } else {
-                    // Enable location providers in the Android Setting if no location providers found
-                    Toast.makeText(context, "No location providers! " +
-                            "Enable location providers!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    intent.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-                    return;
-                }
-
-                myLocation = myLocationManager.getLastKnownLocation(currentProvider);
-                // Automatically updates the current location
-                myLocationManager.requestLocationUpdates(currentProvider,
-                        300000, 50, myListener);
-
-                if (myLocation != null) {
-                    // Set the map's camera position to the current location of the device.
-                    display(myLocation);
-                }
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                    context, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET)
+                    == PackageManager.PERMISSION_GRANTED) {
+                getDeviceLocationHelper();
             } else {
-                Toast.makeText(context, "Current location is null. Using defaults.",
-                        Toast.LENGTH_SHORT).show();
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(37.2643358, -121.787609), 1));
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                ActivityCompat.requestPermissions(EventForm.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET},
+                        MY_PERMISSIONS_REQUEST_CODE);
             }
         } catch (Exception e) {
             Toast.makeText(context, "Exception: e.getMessage()",
                     Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getDeviceLocationHelper() {
+        LocationManager myLocationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        String currentProvider;
+        // Get enabled location providers
+        List<String> myProviders = myLocationManager.getProviders(true);
+
+        // Choose appropriate location providers, the preference can be changed if necessary
+        if (myProviders.contains(LocationManager.GPS_PROVIDER)) {
+            currentProvider = LocationManager.GPS_PROVIDER;
+        } else if (myProviders.contains(LocationManager.NETWORK_PROVIDER)) {
+            currentProvider = LocationManager.NETWORK_PROVIDER;
+        } else {
+            return;
+        }
+
+        myLocation = myLocationManager.getLastKnownLocation(currentProvider);
+        // Automatically updates the current location
+        myLocationManager.requestLocationUpdates(currentProvider,
+                60000, 50, myListener);
+
+        if (myLocation != null) {
+            // Set the map's camera position to the current location of the device.
+            display(myLocation);
         }
     }
 
@@ -395,43 +375,29 @@ public class EventForm extends AppCompatActivity
         }
     };
 
-    // getLocationPermission
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(EventForm.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                EventForm.this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(EventForm.this, Manifest.permission.INTERNET)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(EventForm.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET},
-                    MY_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
     // Handle the permissions request response
     // Code is cited from https://developer.android.com/training/permissions/requesting
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_CODE: {
                 if (grantResults.length == 3
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
+                    getDeviceLocationHelper();
                 } else {
                     // Permission denied
-                    Toast.makeText(context, "Permission denied!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Permission denied! Current location is null. Using defaults.",
+                            Toast.LENGTH_SHORT).show();
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(37.2643358, -121.787609), 1));
+                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 }
             }
+            break;
         }
-        updateLocationUI();
     }
 }

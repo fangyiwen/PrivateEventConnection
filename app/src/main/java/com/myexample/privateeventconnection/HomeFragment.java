@@ -23,10 +23,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,6 +38,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -43,9 +47,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -54,9 +62,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private HomeViewModel mViewModel;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    boolean mLocationPermissionGranted = false;
     private static final int MY_PERMISSIONS_REQUEST_CODE = 1;
     private TextView textViewHello;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    private CircleImageView profileCircleImageView2;
+    private final long ONE_MEGABYTE = 20 * 1024 * 1024;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -208,6 +219,28 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        // Show avatar
+        // https://firebase.google.com/docs/storage/android/download-files
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference().child("avatars/" + uid + ".jpg");
+
+        profileCircleImageView2 = view.findViewById(R.id.profileCircleImageView2);
+        storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Glide.with(getContext())
+                        .load(bytes)
+                        .into(profileCircleImageView2);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                profileCircleImageView2.setImageResource(R.drawable.default_avatar);
+            }
+        });
+
+
         mDatabase.child("Users").child(uid).child("Groups").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -232,10 +265,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                 // Update map
                 mMap.clear();
-                mMap.addMarker(new MarkerOptions().
-                        position(new LatLng(myLocation.getLatitude(),
-                                myLocation.getLongitude())).title("Me").icon(BitmapDescriptorFactory.
-                        defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                if (myLocation != null) {
+                    mMap.addMarker(new MarkerOptions().
+                            position(new LatLng(myLocation.getLatitude(),
+                                    myLocation.getLongitude())).title("Me").icon(BitmapDescriptorFactory.
+                            defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                }
 
                 for (HomeEvent homeEvent : eventArray) {
                     mMap.addMarker(new MarkerOptions().
@@ -244,17 +279,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                             .title(homeEvent.getEventName() + " @ "
                                     + homeEvent.getEventTime()));
                 }
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(myLocation.getLatitude(),
-                                myLocation.getLongitude()), 1));
+                if (myLocation != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(myLocation.getLatitude(),
+                                    myLocation.getLongitude()), 1));
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-
-
         return view;
     }
 
@@ -273,73 +308,54 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         UiSettings uiSettings = mMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
-        // Keep these two at bottom
-        updateLocationUI();
+        // Keep at bottom
         getDeviceLocation();
-    }
-
-    private void updateLocationUI() {
-        if (mMap == null) {
-            return;
-        }
-        try {
-            if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                myLocation = null;
-                getLocationPermission();
-            }
-        } catch (Exception e) {
-            Toast.makeText(getContext(), "Exception: e.getMessage()",
-                    Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void getDeviceLocation() {
         try {
-            if (mLocationPermissionGranted) {
-                LocationManager myLocationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
-                String currentProvider;
-                // Get enabled location providers
-                List<String> myProviders = myLocationManager.getProviders(true);
-
-                // Choose appropriate location providers, the preference can be changed if necessary
-                if (myProviders.contains(LocationManager.GPS_PROVIDER)) {
-                    currentProvider = LocationManager.GPS_PROVIDER;
-                } else if (myProviders.contains(LocationManager.NETWORK_PROVIDER)) {
-                    currentProvider = LocationManager.NETWORK_PROVIDER;
-                } else {
-                    // Enable location providers in the Android Setting if no location providers found
-                    Toast.makeText(getContext(), "No location providers! " +
-                            "Enable location providers!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    intent.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-                    return;
-                }
-
-                myLocation = myLocationManager.getLastKnownLocation(currentProvider);
-                // Automatically updates the current location
-                myLocationManager.requestLocationUpdates(currentProvider,
-                        60000, 50, myListener);
-
-                if (myLocation != null) {
-                    // Set the map's camera position to the current location of the device.
-                    display(myLocation);
-                }
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                    getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.INTERNET)
+                    == PackageManager.PERMISSION_GRANTED) {
+                getDeviceLocationHelper();
             } else {
-                Toast.makeText(getContext(), "Current location is null. Using defaults.",
-                        Toast.LENGTH_SHORT).show();
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(37.2643358, -121.787609), 1));
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET},
+                        MY_PERMISSIONS_REQUEST_CODE);
             }
         } catch (Exception e) {
             Toast.makeText(getContext(), "Exception: e.getMessage()",
                     Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getDeviceLocationHelper() {
+        LocationManager myLocationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
+        String currentProvider;
+        // Get enabled location providers
+        List<String> myProviders = myLocationManager.getProviders(true);
+
+        // Choose appropriate location providers, the preference can be changed if necessary
+        if (myProviders.contains(LocationManager.GPS_PROVIDER)) {
+            currentProvider = LocationManager.GPS_PROVIDER;
+        } else if (myProviders.contains(LocationManager.NETWORK_PROVIDER)) {
+            currentProvider = LocationManager.NETWORK_PROVIDER;
+        } else {
+            return;
+        }
+
+        myLocation = myLocationManager.getLastKnownLocation(currentProvider);
+        // Automatically updates the current location
+        myLocationManager.requestLocationUpdates(currentProvider,
+                60000, 50, myListener);
+
+        if (myLocation != null) {
+            // Set the map's camera position to the current location of the device.
+            display(myLocation);
         }
     }
 
@@ -381,44 +397,30 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    // getLocationPermission
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.INTERNET)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET},
-                    MY_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
     // Handle the permissions request response
     // Code is cited from https://developer.android.com/training/permissions/requesting
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_CODE: {
                 if (grantResults.length == 3
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
+                    getDeviceLocationHelper();
                 } else {
                     // Permission denied
-                    Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Permission denied! Current location is null. Using defaults.",
+                            Toast.LENGTH_SHORT).show();
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(37.2643358, -121.787609), 1));
+                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 }
             }
+            break;
         }
-        updateLocationUI();
     }
 
 

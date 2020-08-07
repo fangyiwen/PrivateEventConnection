@@ -1,8 +1,13 @@
 package com.myexample.privateeventconnection;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,15 +19,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
@@ -34,6 +43,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.app.Activity.RESULT_OK;
 
 public class InfoFragment extends Fragment {
 
@@ -41,9 +59,16 @@ public class InfoFragment extends Fragment {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private TextView currentNameTextView;
-    private LinearLayout adminContainer, updateName, updatePassword, createUser, deleteUser, createGroup, editGroup;
+    private LinearLayout adminContainer, updateName, updatePassword, createUser, deleteUser, createGroup, editGroup, uploadAvatar;
     private String uid;
     private FirebaseUser currentUser;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    private CircleImageView profileCircleImageView;
+    private ImageView imageView_uploading;
+    private final long ONE_MEGABYTE = 20 * 1024 * 1024;
+    private static final int WRITE_SDCARD_PERMISSION_REQUEST_CODE = 1;
+    private static final int CHOICE_FROM_ALBUM_REQUEST_CODE = 4;
 
     public static InfoFragment newInstance() {
         return new InfoFragment();
@@ -62,6 +87,8 @@ public class InfoFragment extends Fragment {
         deleteUser = view.findViewById(R.id.yf_linearLayout_deleteUser);
         createGroup = view.findViewById(R.id.yf_linearLayout_createGroup);
         editGroup = view.findViewById(R.id.yf_linearLayout_editGroup);
+        uploadAvatar = view.findViewById(R.id.yf_linearLayout_uploadAvatar);
+        imageView_uploading = view.findViewById(R.id.imageView_uploading);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -93,6 +120,36 @@ public class InfoFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+        // Show avatar
+        // https://firebase.google.com/docs/storage/android/download-files
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference().child("avatars/" + uid + ".jpg");
+
+        profileCircleImageView = view.findViewById(R.id.profileCircleImageView);
+        storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Glide.with(InfoFragment.this)
+                        .load(bytes)
+                        .into(profileCircleImageView);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                profileCircleImageView.setImageResource(R.drawable.default_avatar);
+            }
+        });
+
+        // Update avatar
+        // https://cloud.tencent.com/developer/article/1385038
+        uploadAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadAvatarHelper();
             }
         });
 
@@ -159,4 +216,76 @@ public class InfoFragment extends Fragment {
         // TODO: Use the ViewModel
     }
 
+    public void uploadAvatarHelper() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_SDCARD_PERMISSION_REQUEST_CODE);
+        } else {
+            uploadAvatarHelperInsider();
+        }
+    }
+
+    public void uploadAvatarHelperInsider() {
+        Intent choiceFromAlbumIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        choiceFromAlbumIntent.setType("image/*");
+        startActivityForResult(choiceFromAlbumIntent, CHOICE_FROM_ALBUM_REQUEST_CODE);
+    }
+
+    // Obtain and extract the returned data from the next activity
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if ((requestCode == CHOICE_FROM_ALBUM_REQUEST_CODE) &&
+                (resultCode == RESULT_OK)) {
+            // Uploading animation
+            Glide.with(InfoFragment.this)
+                    .asGif()
+                    .load(R.drawable.loading)
+                    .into(imageView_uploading);
+
+            Uri file = data.getData();
+            UploadTask uploadTask = storageReference.putFile(file);
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Snackbar.make(getView(), "Upload failed", Snackbar.LENGTH_SHORT).show();
+                    imageView_uploading.setImageResource(R.drawable.baseline_arrow_forward_24);
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Snackbar.make(getView(), "Upload successfully", Snackbar.LENGTH_SHORT).show();
+
+                    // Reload the new avatar
+                    storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Glide.with(InfoFragment.this)
+                                    .load(bytes)
+                                    .into(profileCircleImageView);
+                            imageView_uploading.setImageResource(R.drawable.baseline_arrow_forward_24);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            imageView_uploading.setImageResource(R.drawable.baseline_arrow_forward_24);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case WRITE_SDCARD_PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    uploadAvatarHelperInsider();
+                } else {
+                    Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
 }
