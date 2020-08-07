@@ -36,6 +36,7 @@ public class EventActivity extends AppCompatActivity {
     Context context;
     String name;
     ImageButton edit;
+    Button showmore;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     String uid;
@@ -52,11 +53,30 @@ public class EventActivity extends AppCompatActivity {
         description = findViewById(R.id.desc);
         join = findViewById(R.id.eventjoin);
         edit = findViewById(R.id.edit);
+        showmore = findViewById(R.id.btShowmore);
         context = this;
         Intent intent = getIntent();
         final String groupName = intent.getStringExtra("groupname");
         final String token = intent.getStringExtra("token");
         final String btntext = intent.getStringExtra("buttontext");
+
+
+        showmore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (showmore.getText().toString().equalsIgnoreCase("Show more..."))
+                {
+                    description.setMaxLines(Integer.MAX_VALUE);//your TextView
+                    showmore.setText("Show less");
+                }
+                else
+                {
+                    description.setMaxLines(5);//your TextView
+                    showmore.setText("Show more...");
+                }
+            }
+        });
         mAuth = FirebaseAuth.getInstance();
         uid = mAuth.getCurrentUser().getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference("Users").child(uid);

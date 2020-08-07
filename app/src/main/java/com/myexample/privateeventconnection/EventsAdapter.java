@@ -82,9 +82,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         String currentTime = sdf.format(myCalendar.getTime());
         Log.d("currenttime", currentTime);
         if(event.getEventTime().compareTo(currentTime) < 0){
-            holder.itemView.setBackgroundColor(Color.parseColor("#DFE2D2"));
+            holder.itemView.setBackgroundColor(Color.parseColor("#FBE6D4"));
         }else{
-            holder.itemView.setBackgroundColor(Color.parseColor("#6CBF84"));
+            holder.itemView.setBackgroundColor(Color.parseColor("#FECB89"));
         }
 
         holder.join.setOnClickListener(new View.OnClickListener() {

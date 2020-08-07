@@ -85,16 +85,35 @@
                 android:text="About this event:"
                 android:id="@+id/aboutevent"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/descblock"
+                android:layout_below="@+id/aboutevent"
+                android:orientation="vertical">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/aboutevent"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:textColor="#000000"
-                android:paddingBottom="20sp"
-                android:textSize="20dp"
+                android:textSize="20sp"
+                android:maxLines="5"
                 android:text="Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes (also known as modes of discourse), along with exposition, argumentation, and narration."
                 android:id="@+id/desc"/>
+
+            <Button
+                android:id="@+id/btShowmore"
+                android:layout_width="match_parent"
+                android:text="Show more..."
+                android:layout_marginRight="10sp"
+                android:textAllCaps="false"
+                android:gravity="right"
+                android:textColor="@android:color/holo_blue_light"
+                android:background="@android:color/transparent"
+                android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <ImageButton
                 android:layout_width="45sp"
@@ -104,7 +123,7 @@
                 android:src="@drawable/message"
                 android:background="@drawable/chat_bubble_received"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/desc"/>
+                android:layout_below="@+id/descblock"/>
 
         </RelativeLayout>
 
