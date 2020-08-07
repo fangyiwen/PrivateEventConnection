@@ -45,6 +45,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     Set<String> joined;
     Context context;
     Button createEvent;
+    Button showmore;
     String uid;
 
     @Override
@@ -55,6 +56,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         groupnametx = findViewById(R.id.groupname);
         groupDescription = findViewById(R.id.groupDescription);
         createEvent = findViewById(R.id.createEvent);
+        showmore = findViewById(R.id.grpbtShowmore);
         joined = new HashSet<>();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -73,6 +75,22 @@ public class GroupInfoActivity extends AppCompatActivity {
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
 
+        showmore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (showmore.getText().toString().equalsIgnoreCase("Show more..."))
+                {
+                    groupDescription.setMaxLines(Integer.MAX_VALUE);//your TextView
+                    showmore.setText("Show less");
+                }
+                else
+                {
+                    groupDescription.setMaxLines(5);//your TextView
+                    showmore.setText("Show more...");
+                }
+            }
+        });
         //-----
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override

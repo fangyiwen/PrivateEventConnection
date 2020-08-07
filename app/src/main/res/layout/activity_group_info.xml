@@ -31,6 +31,13 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,9 +45,22 @@
             android:textColor="#000000"
             android:paddingLeft="5sp"
             android:paddingTop="5sp"
-            android:paddingBottom="10sp"
+            android:maxLines="5"
             android:text="Description is the pattern of narrative development that aims to make vivid a place, object, character, or group. Description is one of four rhetorical modes (also known as modes of discourse), along with exposition, argumentation, and narration."
             android:id="@+id/groupDescription"/>
+
+        <Button
+            android:id="@+id/grpbtShowmore"
+            android:layout_width="match_parent"
+            android:text="Show more..."
+            android:layout_marginRight="10sp"
+            android:textAllCaps="false"
+            android:gravity="right"
+            android:textColor="@android:color/holo_blue_light"
+            android:background="@android:color/transparent"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
+
     </ScrollView>
 
     <TextView

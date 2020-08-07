@@ -16,11 +16,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private EditText emailField;
-    private EditText passwordField;
+    private MaterialEditText emailField;
+    private MaterialEditText passwordField;
     private Button loginButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +29,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
-        emailField = (EditText) findViewById(R.id.email);
-        passwordField = (EditText) findViewById(R.id.password);
+        emailField = (MaterialEditText) findViewById(R.id.email);
+        passwordField = (MaterialEditText) findViewById(R.id.password);
         loginButton = findViewById(R.id.login);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
