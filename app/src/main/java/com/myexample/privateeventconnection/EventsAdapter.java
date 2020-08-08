@@ -2,20 +2,17 @@ package com.myexample.privateeventconnection;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,12 +26,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -85,7 +80,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         String currentTime = sdf.format(myCalendar.getTime());
         Log.d("currenttime", currentTime);
         if(event.getEventTime().compareTo(currentTime) < 0){
-            //这个是past events
+            //these are past events
 //            holder.itemView.setBackgroundColor(Color.parseColor("#FBE6D4"));
         }else{
             // upcoming events
