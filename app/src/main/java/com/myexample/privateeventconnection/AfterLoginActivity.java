@@ -51,7 +51,6 @@ public class AfterLoginActivity extends AppCompatActivity {
 
 
         mAuth = FirebaseAuth.getInstance();
-
         // Initialize database for a newly created user
         final FirebaseUser currentUser = mAuth.getCurrentUser();
         final String uid = currentUser.getUid();
