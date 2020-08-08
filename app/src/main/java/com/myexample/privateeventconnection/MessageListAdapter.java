@@ -89,7 +89,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             messageText.setText(message.getContent());
 
             // Format the stored timestamp into a readable String using method.
-            timeText.setText(message.getTime());
+            String ts = message.getTime();
+            timeText.setText(ts.substring(0, 16));
         }
     }
 
@@ -107,7 +108,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             messageText.setText(message.getContent());
 
             // Format the stored timestamp into a readable String using method.
-            timeText.setText(message.getTime());
+            String ts = message.getTime();
+            timeText.setText(ts.substring(0, 8));
             //TODO if within today then display time only otherwise display date too
             nameText.setText(message.getName());
 

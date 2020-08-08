@@ -20,11 +20,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MessageActivity extends AppCompatActivity {
     RecyclerView mMessageRecycler;
@@ -64,8 +67,11 @@ public class MessageActivity extends AppCompatActivity {
                 if(content.isEmpty()){
                     Toast.makeText(context, "Input cannot be empty!", Toast.LENGTH_SHORT).show();
                 }else{
-                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss")
-                            .format(Calendar.getInstance().getTime());
+                    Date dt = new Date(System.currentTimeMillis());
+                    long t = dt.getTime();
+                    final String timeStamp = new Timestamp(t).toString().
+                            replace(".", "");
+
                     Log.d("timeStamp", timeStamp);
 
                     HashMap<String, String> hashMap = new HashMap<>();
@@ -89,19 +95,6 @@ public class MessageActivity extends AppCompatActivity {
 
 
         messageList = new ArrayList<>();
-//        String text = "A message is a discrete unit of communication intended by the source for consumption by some recipient or group of recipients. A message may be delivered by various means, including courier, telegraphy, carrier pigeon and electronic bus. A message can be the content of a broadcast.";
-//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", text, "12:58", "123"));
-//        messageList.add(new BaseMessage("Toan", "hello! hi! it is a very nice day", "12:58", "123"));
 
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
