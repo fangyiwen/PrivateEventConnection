@@ -24,6 +24,8 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/baseline_description_24"
         android:paddingLeft="10sp"
+        android:paddingTop="10sp"
+        android:drawablePadding="5sp"
         android:text="Group Description"
         android:textSize="20sp"
         android:textStyle="bold"/>
@@ -69,7 +71,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:paddingStart="10sp"
-        android:paddingLeft="5sp"
+        android:drawablePadding="5sp"
         android:drawableStart="@drawable/baseline_event_24"
         android:text="All Listed Events"/>
 
