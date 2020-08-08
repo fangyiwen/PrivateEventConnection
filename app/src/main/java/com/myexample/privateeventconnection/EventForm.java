@@ -113,6 +113,8 @@ public class EventForm extends AppCompatActivity
                     String loc = snapshot.child("Location").getValue().toString();
                     String time = snapshot.child("EventTime").getValue().toString();
                     String desc = snapshot.child("Description").getValue().toString();
+                    latitude = snapshot.child("Latitude").getValue().toString();
+                    longitude = snapshot.child("Longitude").getValue().toString();
                     String eventdate = time.split(", ")[0];
                     String eventtime = time.split(", ")[1];
                     title.setText("Modify Event");
@@ -156,7 +158,7 @@ public class EventForm extends AppCompatActivity
                 } else if (hm.isEmpty()) {
                     Toast.makeText(EventForm.this, "Time is required!", Toast.LENGTH_SHORT).show();
                 } else if (latitude == null || longitude == null) {
-                    Toast.makeText(EventForm.this, "Long click to drag the map maker to the location!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EventForm.this, "Click the map maker to the location!", Toast.LENGTH_SHORT).show();
                 } else {
                     final HashMap<String, String> hashMap = new HashMap<>();
                     hashMap.put("EventName", name);
