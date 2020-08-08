@@ -357,7 +357,7 @@ public class EventActivity extends AppCompatActivity {
                                 hashMap.put("Description", event.getDescription());
                                 hashMap.put("Admin", event.getAdmin());
                                 hashMap.put("EventName", event.getEventName());
-                                hashMap.put("EventTime", event.getEventName());
+                                hashMap.put("EventTime", event.getEventTime());
                                 hashMap.put("EventToken", event.getEventToken());
                                 hashMap.put("Location", event.getLocation());
                                 hashMap.put("Latitude", event.getLatitude());
