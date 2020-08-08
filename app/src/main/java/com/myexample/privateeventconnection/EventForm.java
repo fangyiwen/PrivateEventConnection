@@ -343,7 +343,7 @@ public class EventForm extends AppCompatActivity
     private void display(Location location) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(location.getLatitude(),
-                        location.getLongitude()), 1));
+                        location.getLongitude()), 5));
         if (myLocationMarker != null) {
             myLocationMarker.remove();
         }
@@ -393,7 +393,7 @@ public class EventForm extends AppCompatActivity
                     Toast.makeText(context, "Permission denied! Current location is null. Using defaults.",
                             Toast.LENGTH_SHORT).show();
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(37.2643358, -121.787609), 1));
+                            new LatLng(37.2643358, -121.787609), 5));
                     mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 }
             }

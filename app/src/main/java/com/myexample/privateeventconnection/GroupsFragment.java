@@ -26,7 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GroupsFragment extends Fragment {
 
@@ -35,10 +36,7 @@ public class GroupsFragment extends Fragment {
     private DatabaseReference mDatabase;
     private GridView gridView;
     private ArrayList<String> groupNames;
-
-
-
-
+    private int groupCount = 1;
 
     public static GroupsFragment newInstance() {
         return new GroupsFragment();
@@ -48,7 +46,6 @@ public class GroupsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.groups_fragment, container, false);
-
 
         // Initialize gridview.  In order to use findViewById, we have to put a view in the front
         gridView = view.findViewById(R.id.gridview);
@@ -62,12 +59,10 @@ public class GroupsFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), GroupInfoActivity.class);
                 // We need to pass the groupname to GroupInfoActivity,
                 // so that GroupInfoActivity can display its corresponding information.
-                intent.putExtra("groupname",groupNames.get(position));
+                intent.putExtra("groupname", groupNames.get(position));
                 startActivity(intent);
             }
         });
-
-
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -83,7 +78,7 @@ public class GroupsFragment extends Fragment {
                 groupNames.clear();
                 // Iterate through all groups and get their names. Add names to groupNames arraylist.
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    if(!child.getKey().equals("DefaultGroup")){
+                    if (!child.getKey().equals("DefaultGroup")) {
                         groupNames.add(child.getKey());
                     }
 
@@ -94,8 +89,6 @@ public class GroupsFragment extends Fragment {
                 gridView.setAdapter(customAdapter);
 //                customAdapter.notifyDataSetChanged();
 
-
-
             }
 
             @Override
@@ -103,11 +96,6 @@ public class GroupsFragment extends Fragment {
 
             }
         });
-
-
-
-
-
 
         return view;
     }
@@ -138,16 +126,20 @@ public class GroupsFragment extends Fragment {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            View view1 = getLayoutInflater().inflate(R.layout.row_data,null);
+            View view1 = getLayoutInflater().inflate(R.layout.row_data, null);
             // Getting view in row_data xml
             TextView name = view1.findViewById(R.id.groupname);
             // Put group name in corresponding textview
             name.setText(groupNames.get(i));
 
+            CircleImageView profileCircleImageView = view1.findViewById(R.id.profileCircleImageView3);
+            if (groupCount > 20) {
+                groupCount = 1;
+            }
+            String group_icon_x = "group_icon_" + groupCount;
+            profileCircleImageView.setImageResource(getResources().getIdentifier(group_icon_x, "drawable", "com.myexample.privateeventconnection"));
+            groupCount++;
             return view1;
-
-
-
         }
     }
 }

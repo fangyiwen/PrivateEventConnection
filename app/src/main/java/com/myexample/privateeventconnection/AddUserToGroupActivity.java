@@ -34,11 +34,14 @@ public class AddUserToGroupActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     FirebaseUser currentUser;
     String uid;
+    private Context myContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delete_user);
+
+        myContext = AddUserToGroupActivity.this;
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -94,7 +97,7 @@ public class AddUserToGroupActivity extends AppCompatActivity {
                 ViewHolder viewHolder;
 
                 if (convertView == null) {
-                    view = LayoutInflater.from(getContext()).inflate(resourceId, null);
+                    view = LayoutInflater.from(myContext).inflate(resourceId, null);
 
                     viewHolder = new ViewHolder();
                     viewHolder.email = view.findViewById(R.id.admin_email);
@@ -151,7 +154,7 @@ public class AddUserToGroupActivity extends AppCompatActivity {
             }
         }
 
-        final UserAdapter adapter = new UserAdapter(this, R.layout.admin_user_row, userArray);
+        final UserAdapter adapter = new UserAdapter(myContext, R.layout.admin_user_row, userArray);
         final ListView listView = findViewById(R.id.admin_listView_delUser);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();

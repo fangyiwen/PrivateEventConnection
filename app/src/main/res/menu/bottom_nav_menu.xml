@@ -13,6 +13,6 @@
         android:icon="@drawable/ic_action_groups"/>
     <item
         android:id="@+id/info"
-        android:title="Info"
+        android:title="Settings"
         android:icon="@drawable/ic_action_info"/>
 </menu>

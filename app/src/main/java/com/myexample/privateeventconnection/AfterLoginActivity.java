@@ -7,6 +7,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -34,11 +35,15 @@ public class AfterLoginActivity extends AppCompatActivity {
     NavController navController;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private Context myContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_after_login);
+
+        myContext = AfterLoginActivity.this;
+
         // Build bottom navigation
         bottomNavigationView = findViewById(R.id.bottom_nav);
         navController = Navigation.findNavController(this, R.id.fragment);

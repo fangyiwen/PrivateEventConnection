@@ -51,6 +51,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -68,6 +70,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private StorageReference storageReference;
     private CircleImageView profileCircleImageView2;
     private final long ONE_MEGABYTE = 20 * 1024 * 1024;
+    private Context myContext;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -76,6 +79,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        myContext = getContext();
+
         final View view = inflater.inflate(R.layout.home_fragment, container, false);
 
         textViewHello = view.findViewById(R.id.home_textView_hello);
@@ -155,7 +161,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 ViewHolder viewHolder;
 
                 if (convertView == null) {
-                    view = LayoutInflater.from(getContext()).inflate(resourceId, null);
+                    view = LayoutInflater.from(myContext).inflate(resourceId, null);
 
                     viewHolder = new ViewHolder();
                     viewHolder.eventName = (TextView) view.findViewById(R.id.home_eventTitle);
@@ -180,7 +186,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
-        final EventAdapter adapter = new EventAdapter(getContext(), R.layout.home_event_row, eventArray);
+        final EventAdapter adapter = new EventAdapter(myContext, R.layout.home_event_row, eventArray);
         final ListView listView = view.findViewById(R.id.home_listView);
         listView.setAdapter(adapter);
 
@@ -193,7 +199,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 if (homeEvent.getGroupname().equals("")) {
                     return;
                 }
-                Intent intent = new Intent(getContext(), EventActivity.class);
+                Intent intent = new Intent(myContext, EventActivity.class);
                 intent.putExtra("token", homeEvent.getToken());
                 intent.putExtra("groupname", homeEvent.getGroupname());
                 intent.putExtra("buttontext", "Leave");
@@ -228,7 +234,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                Glide.with(getContext())
+                Glide.with(myContext)
                         .load(bytes)
                         .into(profileCircleImageView2);
 
@@ -261,6 +267,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         eventArray.add(homeEvent);
                     }
                 }
+
+                if (!eventArray.isEmpty()) {
+                    Collections.sort(eventArray, new Comparator<HomeEvent>() {
+                        @Override
+                        public int compare(HomeEvent o1, HomeEvent o2) {
+                            String[] dt1 = o1.getEventTime().split(", ");
+                            String[] dt2 = o2.getEventTime().split(", ");
+                            String[] date1 = dt1[0].split("/");
+                            String[] date2 = dt2[0].split("/");
+                            String dateandtime1 = date1[2] + date1[0] + date1[1] + dt1[1];
+                            String dateandtime2 = date2[2] + date2[0] + date2[1] + dt2[1];
+                            return dateandtime2.compareTo(dateandtime1);
+                        }
+                    });
+                }
+
                 listView.setAdapter(adapter);
 
                 // Update map
@@ -282,7 +304,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 if (myLocation != null) {
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                             new LatLng(myLocation.getLatitude(),
-                                    myLocation.getLongitude()), 1));
+                                    myLocation.getLongitude()), 2));
                 }
             }
 
@@ -314,11 +336,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private void getDeviceLocation() {
         try {
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            if (ContextCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                    getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                    myContext, Manifest.permission.ACCESS_COARSE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED
-                    && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.INTERNET)
+                    && ContextCompat.checkSelfPermission(myContext, Manifest.permission.INTERNET)
                     == PackageManager.PERMISSION_GRANTED) {
                 getDeviceLocationHelper();
             } else {
@@ -328,13 +350,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         MY_PERMISSIONS_REQUEST_CODE);
             }
         } catch (Exception e) {
-            Toast.makeText(getContext(), "Exception: e.getMessage()",
+            Toast.makeText(myContext, "Exception: e.getMessage()",
                     Toast.LENGTH_SHORT).show();
         }
     }
 
     private void getDeviceLocationHelper() {
-        LocationManager myLocationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
+        LocationManager myLocationManager = (LocationManager) myContext.getSystemService(LOCATION_SERVICE);
         String currentProvider;
         // Get enabled location providers
         List<String> myProviders = myLocationManager.getProviders(true);
@@ -364,7 +386,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private void display(Location location) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(location.getLatitude(),
-                        location.getLongitude()), 1));
+                        location.getLongitude()), 2));
         if (myLocationMarker != null) {
             myLocationMarker.remove();
         }
@@ -412,16 +434,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     getDeviceLocationHelper();
                 } else {
                     // Permission denied
-                    Toast.makeText(getContext(), "Permission denied! Current location is null. Using defaults.",
+                    Toast.makeText(myContext, "Permission denied! Current location is null. Using defaults.",
                             Toast.LENGTH_SHORT).show();
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(37.2643358, -121.787609), 1));
+                            new LatLng(37.2643358, -121.787609), 2));
                     mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 }
             }
             break;
         }
     }
-
-
 }

@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -17,25 +18,15 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,8 +37,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -69,6 +58,7 @@ public class InfoFragment extends Fragment {
     private final long ONE_MEGABYTE = 20 * 1024 * 1024;
     private static final int WRITE_SDCARD_PERMISSION_REQUEST_CODE = 1;
     private static final int CHOICE_FROM_ALBUM_REQUEST_CODE = 4;
+    private Context myContext;
 
     public static InfoFragment newInstance() {
         return new InfoFragment();
@@ -77,6 +67,8 @@ public class InfoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        myContext = getContext();
 
         final View view = inflater.inflate(R.layout.info_fragment_design_ui, container, false);
         currentNameTextView = view.findViewById(R.id.yf_textView7_ui);
@@ -132,7 +124,7 @@ public class InfoFragment extends Fragment {
         storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                Glide.with(InfoFragment.this)
+                Glide.with(myContext)
                         .load(bytes)
                         .into(profileCircleImageView);
 
@@ -157,7 +149,7 @@ public class InfoFragment extends Fragment {
         updateName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), UpdateNameActivity.class);
+                Intent intent = new Intent(myContext, UpdateNameActivity.class);
                 startActivity(intent);
             }
         });
@@ -166,7 +158,7 @@ public class InfoFragment extends Fragment {
         updatePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), UpdatePasswordActivity.class);
+                Intent intent = new Intent(myContext, UpdatePasswordActivity.class);
                 startActivity(intent);
             }
         });
@@ -175,7 +167,7 @@ public class InfoFragment extends Fragment {
         createUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), CreateUserActivity.class);
+                Intent intent = new Intent(myContext, CreateUserActivity.class);
                 startActivity(intent);
             }
         });
@@ -184,7 +176,7 @@ public class InfoFragment extends Fragment {
         deleteUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), DeleteUserActivity.class);
+                Intent intent = new Intent(myContext, DeleteUserActivity.class);
                 startActivity(intent);
             }
         });
@@ -193,7 +185,7 @@ public class InfoFragment extends Fragment {
         createGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), CreateGroupActivity.class);
+                Intent intent = new Intent(myContext, CreateGroupActivity.class);
                 startActivity(intent);
             }
         });
@@ -202,7 +194,7 @@ public class InfoFragment extends Fragment {
         editGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), GroupOperationActivity.class);
+                Intent intent = new Intent(myContext, GroupOperationActivity.class);
                 startActivity(intent);
             }
         });
@@ -217,7 +209,7 @@ public class InfoFragment extends Fragment {
     }
 
     public void uploadAvatarHelper() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(myContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_SDCARD_PERMISSION_REQUEST_CODE);
@@ -237,7 +229,7 @@ public class InfoFragment extends Fragment {
         if ((requestCode == CHOICE_FROM_ALBUM_REQUEST_CODE) &&
                 (resultCode == RESULT_OK)) {
             // Uploading animation
-            Glide.with(InfoFragment.this)
+            Glide.with(myContext)
                     .asGif()
                     .load(R.drawable.loading)
                     .into(imageView_uploading);
@@ -260,7 +252,7 @@ public class InfoFragment extends Fragment {
                     storageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                         @Override
                         public void onSuccess(byte[] bytes) {
-                            Glide.with(InfoFragment.this)
+                            Glide.with(myContext)
                                     .load(bytes)
                                     .into(profileCircleImageView);
                             imageView_uploading.setImageResource(R.drawable.baseline_arrow_forward_24);
@@ -283,7 +275,7 @@ public class InfoFragment extends Fragment {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     uploadAvatarHelperInsider();
                 } else {
-                    Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(myContext, "Permission denied!", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
