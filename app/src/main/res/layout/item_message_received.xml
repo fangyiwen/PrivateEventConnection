@@ -7,16 +7,6 @@
     android:layout_height="wrap_content"
     android:paddingTop="8dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/image_message_profilerecv"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentEnd="true"
-        app:civ_border_color="@color/imageBorderColor"
-        app:civ_border_width="2dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"/>
 
     <TextView
         android:id="@+id/text_message_name"
@@ -24,8 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        app:layout_constraintLeft_toRightOf="@+id/image_message_profilerecv"
-        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="8dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="4dp" />
 
@@ -40,7 +30,7 @@
         android:textColor="#ffffff"
         android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@+id/text_message_name"
-        app:layout_constraintStart_toEndOf="@+id/image_message_profilerecv"
+        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginLeft="8dp" />
 
     <TextView
