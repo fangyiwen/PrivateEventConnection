@@ -69,7 +69,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                                 return;
                             }
                         }
-                        mDatabase.child("Groups").child(newGroup).child("GroupInfo").child("Admin").setValue("rCCaMwoxVuNIaNY08W2oR7Ih6lP2");
+                        mDatabase.child("Groups").child(newGroup).child("GroupInfo").child("Admin").setValue("MLEFRubFlwNrvCs95RJ38ph5SBD2");
                         mDatabase.child("Groups").child(newGroup).child("GroupInfo").child("Description").setValue(newGroupDescription);
                         mDatabase.child("Users").child(uid).child("Groups").child(newGroup).setValue(false);
 

@@ -145,7 +145,7 @@ public class DeleteUserActivity extends AppCompatActivity {
                                     }
                                     for (DataSnapshot event : group.child("Events").getChildren()) {
                                         if (event.child("EventInfo").child("Admin").equals(uidDelete)) {
-                                            mDatabase.child("Groups").child(group.getKey()).child("Events").child(event.getKey()).child("EventInfo").child("Admin").setValue("rCCaMwoxVuNIaNY08W2oR7Ih6lP2");
+                                            mDatabase.child("Groups").child(group.getKey()).child("Events").child(event.getKey()).child("EventInfo").child("Admin").setValue("MLEFRubFlwNrvCs95RJ38ph5SBD2");
                                         }
                                     }
                                 }
