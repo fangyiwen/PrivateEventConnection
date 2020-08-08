@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private MaterialEditText emailField;
     private MaterialEditText passwordField;
     private Button loginButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         // If user already logged in, go to AfterLoginActivity
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if(currentUser != null){
+        if (currentUser != null) {
             updateUI();
         }
     }

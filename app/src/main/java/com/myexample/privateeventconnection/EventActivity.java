@@ -340,11 +340,6 @@ public class EventActivity extends AppCompatActivity {
 
                         }
                     });
-
-
-
-
-
                 }else{
                     mDatabase = FirebaseDatabase.getInstance().getReference()
                             .child("Groups").child(groupName).child("Events").child(token);
@@ -389,7 +384,6 @@ public class EventActivity extends AppCompatActivity {
                 }
             }
         });
-
 
 
         mDatabase = FirebaseDatabase.getInstance().getReference()

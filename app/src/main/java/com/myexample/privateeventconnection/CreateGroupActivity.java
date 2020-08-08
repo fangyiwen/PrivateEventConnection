@@ -61,7 +61,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot group : dataSnapshot.getChildren()) {
-                            if (group.getKey().equals(newGroup)){
+                            if (group.getKey().equals(newGroup)) {
                                 Toast.makeText(CreateGroupActivity.this, "Failed: Group name " + newGroup + " already exists.",
                                         Toast.LENGTH_SHORT).show();
                                 createGroupButton.setText("Submit");

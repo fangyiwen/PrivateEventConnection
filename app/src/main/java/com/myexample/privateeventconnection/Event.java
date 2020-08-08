@@ -1,8 +1,5 @@
 package com.myexample.privateeventconnection;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Event {
     String EventName;
     String Admin;
