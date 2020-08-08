@@ -44,7 +44,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     List<Event> mEvents;
     Set<String> joined;
     Context context;
-    Button createEvent;
+    TextView createEvent;
     Button showmore;
     String uid;
 
@@ -112,7 +112,6 @@ public class GroupInfoActivity extends AppCompatActivity {
                 for(DataSnapshot sn: snapshot.getChildren()){
                     if(sn.getKey().equals("Users")){
                         for(DataSnapshot tk: sn.child(uid).child("Groups").child(groupname).getChildren()){
-                            //TODO not checking dummy joined events, but it's ok so far
                             joined.add(tk.getKey());
                         }
                     }

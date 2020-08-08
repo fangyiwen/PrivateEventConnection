@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -71,9 +72,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         final String token = event.getEventToken();
 
         if(joined.contains(token)){
-            holder.join.setText("Leave");
+            holder.join.setImageResource(R.drawable.baseline_remove_circle_outline_24);
+            holder.join.setTag("Leave");
         }else{
-            holder.join.setText("Join");
+            holder.join.setImageResource(R.drawable.baseline_add_circle_outline_24);
+            holder.join.setTag("Join");
         }
 
         String myFormat = "MM/dd/yy, HH:mm"; //In which you need put here
@@ -82,9 +85,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         String currentTime = sdf.format(myCalendar.getTime());
         Log.d("currenttime", currentTime);
         if(event.getEventTime().compareTo(currentTime) < 0){
-            holder.itemView.setBackgroundColor(Color.parseColor("#FBE6D4"));
+            //这个是past events
+//            holder.itemView.setBackgroundColor(Color.parseColor("#FBE6D4"));
         }else{
-            holder.itemView.setBackgroundColor(Color.parseColor("#FECB89"));
+            // upcoming events
+//            holder.itemView.setBackgroundColor(Color.parseColor("#FECB89"));
         }
 
         holder.join.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +101,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
 
 
-                if(holder.join.getText().toString().equals("Leave")){
+                if(holder.join.getTag().toString().equals("Leave")){
 
                     FirebaseDatabase.getInstance().getReference().child("Groups").child(groupname).child("Events").child(token).addValueEventListener(new ValueEventListener() {
                         @Override
@@ -155,7 +160,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                                     reference.child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            holder.join.setText("Join");
+                                            holder.join.setImageResource(R.drawable.baseline_add_circle_outline_24);
+                                            holder.join.setTag("Join");
                                         }
                                     });
 
@@ -185,22 +191,24 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                     reference.child(token).child("EventInfo").setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        holder.join.setText("Leave");
+//                        holder.join.setText("Leave");
+                        holder.join.setImageResource(R.drawable.baseline_remove_circle_outline_24);
+                        holder.join.setTag("Leave");
                     }
                 });
                 }
             }
         });
         holder.eventName.setText(event.EventName);
-        holder.location.setText("Location: " + event.Location);
-        holder.time.setText("Time: "+event.EventTime);
+        holder.location.setText(event.Location);
+        holder.time.setText(event.EventTime);
         holder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, EventActivity.class);
                 intent.putExtra("token", token);
                 intent.putExtra("groupname", groupname);
-                intent.putExtra("buttontext", holder.join.getText().toString());
+                intent.putExtra("buttontext", holder.join.getTag().toString());
                 mContext.startActivity(intent);
             }
         });
@@ -213,17 +221,17 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        public Button join;
+        public ImageView join;
         public TextView eventName;
         public TextView location;
         public TextView time;
 
         public ViewHolder(View itemView){
             super(itemView);
-            join = itemView.findViewById(R.id.jjjoin);
-            eventName = itemView.findViewById(R.id.eventTitle);
-            location = itemView.findViewById(R.id.eventloc);
-            time = itemView.findViewById(R.id.eventtime);
+            join = itemView.findViewById(R.id.groupinfo_joinorleave);
+            eventName = itemView.findViewById(R.id.groupinfo_eventTitle);
+            location = itemView.findViewById(R.id.groupinfo_eventloc);
+            time = itemView.findViewById(R.id.groupinfo_eventtime);
         }
     }
 

@@ -31,11 +31,11 @@ public class EventActivity extends AppCompatActivity {
     TextView time;
     TextView location;
     TextView description;
-    Button join;
+    TextView join;
     ImageButton chat;
     Context context;
     String name;
-    ImageButton edit;
+    TextView edit;
     Button showmore;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
@@ -99,7 +99,7 @@ public class EventActivity extends AppCompatActivity {
                 if(snapshot.child("Admin").getValue(Double.class).equals(1)){
                     admin = true;
                 }
-                if(snapshot.child("Groups").child(groupName).hasChildren() && snapshot.child("Groups").child(groupName).child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
+                if(snapshot.child("Groups").child(groupName).child(token).hasChildren() && snapshot.child("Groups").child(groupName).child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
                     admin = true;
                 }
                 if(!admin){
@@ -115,30 +115,16 @@ public class EventActivity extends AppCompatActivity {
         //TODO 判断这个event 是否还存在 如果不存在返回上一级
 
         join.setText(btntext);
+        if(btntext.equals("Join")){
+            join.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_add_circle_outline_24, 0, 0,0);
+        }else{
+            join.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_remove_circle_outline_24, 0, 0, 0);
+        }
+
         final DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference("Users").child(uid).child("Groups")
                 .child(groupName);
-        join.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(join.getText().toString().equals("Leave")){
-                    reference.child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            join.setText("Join");
-                        }
-                    });
 
-                }else{
-                    reference.child(token).setValue("1").addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            join.setText("Leave");
-                        }
-                    });
-                }
-            }
-        });
 
 
 
@@ -209,7 +195,7 @@ public class EventActivity extends AppCompatActivity {
                     admin = true;
                 }
 
-                if(snapshot.child("Groups").child(groupName).hasChildren() && snapshot.child("Groups").child(groupName).child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
+                if(snapshot.child("Groups").child(groupName).child(token).hasChildren() && snapshot.child("Groups").child(groupName).child(token).child("EventInfo").child("Admin").getValue().equals(uid)){
                     admin = true;
                 }
 
@@ -318,6 +304,7 @@ public class EventActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             join.setText("Join");
+                                            join.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_add_circle_outline_24, 0, 0,0);
                                         }
                                     });
 
@@ -366,6 +353,7 @@ public class EventActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         join.setText("Leave");
+                                        join.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_remove_circle_outline_24, 0, 0,0);
                                     }
                                 });
                             }

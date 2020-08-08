@@ -1,46 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10dp"
-    android:background="@color/colorPrimary">
+    android:layout_centerVertical="true">
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10sp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/eventTitle"
-            android:textSize="22sp"
-            android:gravity="left"
-            android:textStyle="bold"
-            android:text="Event Name"/>
+            android:orientation="vertical">
 
-            <Button
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:maxWidth="40dp"
+                    android:src="@drawable/baseline_event_seat_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Event: "
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/groupinfo_eventTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0"
+                    android:text="" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:id="@+id/jjjoin"
-                android:text="Leave"/>
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:maxWidth="40dp"
+                    android:src="@drawable/baseline_access_time_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Time: "
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/groupinfo_eventtime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:maxWidth="40dp"
+                    android:src="@drawable/baseline_location_on_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Location: "
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/groupinfo_eventloc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/groupinfo_joinorleave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:maxWidth="40dp"
+            android:paddingRight="5sp"
+            android:src="@drawable/baseline_add_circle_outline_24" />
 
     </LinearLayout>
-    <TextView
-        android:id="@+id/eventtime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="8.10.2020 12:30"
-        android:textSize="20sp"/>
 
-    <TextView
-        android:id="@+id/eventloc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="123 parkway"
-        android:textSize="20sp"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
