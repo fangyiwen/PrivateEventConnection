@@ -96,7 +96,7 @@ public class CreateUserActivity extends AppCompatActivity {
                         mDatabase.child("Users").child(localId).child("Admin").setValue(0);
                         mDatabase.child("Users").child(localId).child("Groups").child("DefaultGroup").setValue(false);
                         mDatabase.child("Users").child(localId).child("Email").setValue(email);
-                        mDatabase.child("Users").child(localId).child("Name").setValue("User (" + (email) + ")");
+                        mDatabase.child("Users").child(localId).child("Name").setValue("User (" + email.substring(0, email.indexOf("@")) + ")");
 
                         Snackbar.make(findViewById(android.R.id.content), "Create user with Email: success with Email " + email + " and password " + password, Snackbar.LENGTH_SHORT).show();
                         Handler h2 = new Handler(Looper.getMainLooper());

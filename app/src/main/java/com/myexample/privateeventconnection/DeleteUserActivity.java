@@ -117,7 +117,7 @@ public class DeleteUserActivity extends AppCompatActivity {
                     viewHolder.name = view.findViewById(R.id.admin_nickName);
                     viewHolder.deleteButton = view.findViewById(R.id.admin_delUser);
                     // Admin role should never be deleted
-                    if (userArray.get(position).getEmail().equals("user1@myexample.com")) {
+                    if (userArray.get(position).getEmail().equals("admin@example.com")) {
                         viewHolder.deleteButton.setVisibility(View.GONE);
                     }
                     view.setTag(viewHolder);

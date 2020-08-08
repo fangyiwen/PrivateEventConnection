@@ -76,6 +76,7 @@ public class GroupsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 groupNames.clear();
+                groupCount = 1;
                 // Iterate through all groups and get their names. Add names to groupNames arraylist.
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     if (!child.getKey().equals("DefaultGroup")) {

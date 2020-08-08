@@ -36,6 +36,7 @@ public class AfterLoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private Context myContext;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,10 @@ public class AfterLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_after_login);
 
         myContext = AfterLoginActivity.this;
+
+        // Start service for checking account existence
+        intent = new Intent(myContext, MyService.class);
+        startService(intent);
 
         // Build bottom navigation
         bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -73,6 +78,12 @@ public class AfterLoginActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(intent);
     }
 
     // Build top right menu
