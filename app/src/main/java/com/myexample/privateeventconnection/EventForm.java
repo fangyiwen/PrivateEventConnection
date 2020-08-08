@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Locale;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class EventForm extends AppCompatActivity
         implements OnMapReadyCallback {
@@ -168,8 +169,12 @@ public class EventForm extends AppCompatActivity
                     hashMap.put("EventTime", time);
                     hashMap.put("Latitude", latitude);
                     hashMap.put("Longitude", longitude);
-                    Date dt = new Date();
-                    long t = dt.getTime();
+                    //
+                    Date date = new Date();
+                    TimeZone.setDefault(TimeZone.getTimeZone("GMT-7"));
+                    Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+                    date = cal.getTime();
+                    long t = date.getTime();
                     final String ts = timestamp.isEmpty() ? new Timestamp(t).toString().replace("-", "").
                             replace(" ", "").
                             replace(":", "").
