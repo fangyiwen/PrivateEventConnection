@@ -1,6 +1,7 @@
 package com.myexample.privateeventconnection;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,6 +24,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
@@ -90,8 +93,7 @@ public class EventActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        // TODO hahahahah
-        //TODO 判断admin token 和 uid 是否一致 -> edit button 显示
+
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -112,7 +114,7 @@ public class EventActivity extends AppCompatActivity {
 
             }
         });
-        //TODO 判断这个event 是否还存在 如果不存在返回上一级
+
 
         join.setText(btntext);
         if(btntext.equals("Join")){
@@ -254,6 +256,7 @@ public class EventActivity extends AppCompatActivity {
                                 //current user is admin
                                 if(uid.equals(event.getAdmin())){
                                     //prompt the dialog
+                                    Log.d("iiisadmin", "admin");
 
                                     AlertDialog.Builder altdial = new AlertDialog.Builder(EventActivity.this);
                                     altdial.setMessage("You are the admin of this event. Do you want to dismiss?").setCancelable(false)
@@ -278,9 +281,6 @@ public class EventActivity extends AppCompatActivity {
                                                         }
                                                     });
 
-
-
-
                                                 }
                                             })
                                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -295,19 +295,39 @@ public class EventActivity extends AppCompatActivity {
                                     alertDialog.setTitle("Warning");
                                     alertDialog.show();
 
-
-
                                 }
                                 // current user is not admin
                                 else {
-                                    reference.child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    final DatabaseReference rf = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            join.setText("Join");
-                                            join.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_add_circle_outline_24, 0, 0,0);
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if(snapshot.getChildrenCount()>1){
+                                                rf.child("Groups").child(groupName).child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        join.setText("Join");
+                                                        join.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_add_circle_outline_24, 0, 0,0);
+                                                    }
+                                                });
+                                            }else{
+                                                Log.d("countttt2", String.valueOf(snapshot.getChildrenCount()));
+                                                rf.child("Groups").child(groupName).setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                join.setText("Join");
+                                                                join.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_add_circle_outline_24, 0, 0,0);
+                                                    }
+                                                });
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
                                         }
                                     });
-
                                 }
                             }
 
@@ -438,14 +458,21 @@ public class EventActivity extends AppCompatActivity {
 
     private void deleteAllUsersEvents(final String groupName, final String token) {
 
-        FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 for (DataSnapshot user : snapshot.getChildren()) {
                     if(user.child("Groups").child(groupName).getValue() != null){
                         if(user.child("Groups").child(groupName).child(token).getValue() != null){
-                            user.child("Groups").child(groupName).child(token).getRef().removeValue();
+                            if(user.child("Groups").child(groupName).getChildrenCount()<=1){
+                                // only one left
+                                DatabaseReference rf = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+                                rf.child("Groups").child(groupName).setValue(false);
+                            }else{
+                                //more than one
+                                user.child("Groups").child(groupName).child(token).getRef().removeValue();
+                            }
                         }
 
                     }

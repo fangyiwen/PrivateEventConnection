@@ -157,11 +157,31 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                                 }
                                 // current user is not admin
                                 else {
-                                    reference.child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            holder.join.setImageResource(R.drawable.baseline_add_circle_outline_24);
-                                            holder.join.setTag("Join");
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if(snapshot.getChildrenCount()>1){
+                                                reference.child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        holder.join.setImageResource(R.drawable.baseline_add_circle_outline_24);
+                                                        holder.join.setTag("Join");
+                                                    }
+                                                });
+                                            }else{
+                                                reference.setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        holder.join.setImageResource(R.drawable.baseline_add_circle_outline_24);
+                                                        holder.join.setTag("Join");
+                                                    }
+                                                });
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
                                         }
                                     });
 
@@ -243,10 +263,16 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
                 for (DataSnapshot user : snapshot.getChildren()) {
                     if(user.child("Groups").child(groupName).getValue() != null){
-                        if(user.child("Groups").child(groupName).child(token).getValue() != null){
-                            user.child("Groups").child(groupName).child(token).getRef().removeValue();
+                        if(user.child("Groups").child(groupName).child(token).getValue() != null) {
+                            if (user.child("Groups").child(groupName).getChildrenCount() <= 1) {
+                                // only one left
+                                DatabaseReference rf = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+                                rf.child("Groups").child(groupName).setValue(false);
+                            } else {
+                                //more than one
+                                user.child("Groups").child(groupName).child(token).getRef().removeValue();
+                            }
                         }
-
                     }
                 }
 

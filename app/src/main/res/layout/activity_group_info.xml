@@ -55,7 +55,7 @@
             android:id="@+id/grpbtShowmore"
             android:layout_width="match_parent"
             android:text="Show more..."
-            android:layout_marginRight="10sp"
+            android:layout_marginRight="25sp"
             android:textAllCaps="false"
             android:gravity="right"
             android:textColor="@android:color/holo_blue_light"
