@@ -68,12 +68,22 @@ public class MessageActivity extends AppCompatActivity {
                     Toast.makeText(context, "Input cannot be empty!", Toast.LENGTH_SHORT).show();
                 }else{
 
-                    Calendar time = Calendar.getInstance();
-                    time.add(Calendar.MILLISECOND, -time.getTimeZone().getOffset(time.getTimeInMillis()));
-                    Date dt = time.getTime();
-                    long t = dt.getTime();
+                    Date date = new Date();
+                    TimeZone.setDefault(TimeZone.getTimeZone("GMT-7"));
+                    Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+                    date = cal.getTime();
+                    long t = date.getTime();
                     final String timeStamp = new Timestamp(t).toString().
                             replace(".", "");
+                    // start
+//                    Calendar time = Calendar.getInstance();
+//                    time.add(Calendar.MILLISECOND, -time.getTimeZone().getOffset(time.getTimeInMillis()));
+//                    Date dt = time.getTime();
+//                    long t = dt.getTime();
+//                    final String timeStamp = new Timestamp(t).toString().
+//                            replace(".", "");
+
+                    // end
 
                     Log.d("timeStamp", timeStamp);
 
