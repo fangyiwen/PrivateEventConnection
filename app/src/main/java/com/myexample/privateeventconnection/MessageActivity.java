@@ -87,13 +87,6 @@ public class MessageActivity extends AppCompatActivity {
         });
 
 
-//        mDatabase.addValueEventListener
-
-
-
-
-
-
         messageList = new ArrayList<>();
 
         mDatabase.addValueEventListener(new ValueEventListener() {
