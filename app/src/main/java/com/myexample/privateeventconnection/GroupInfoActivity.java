@@ -126,6 +126,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                         }
                     }
                 }
+
                 if(!mEvents.isEmpty()){
                     Collections.sort(mEvents, new Comparator<Event>() {
                         @Override
