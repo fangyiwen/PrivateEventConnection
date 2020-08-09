@@ -135,12 +135,8 @@ public class GroupsFragment extends Fragment {
             name.setText(groupNames.get(i));
 
             CircleImageView profileCircleImageView = view1.findViewById(R.id.profileCircleImageView3);
-            if (groupCount > 20) {
-                groupCount = 1;
-            }
-            String group_icon_x = "group_icon_" + groupCount;
+            String group_icon_x = "group_icon_" + (i%20+3)%20;
             profileCircleImageView.setImageResource(getResources().getIdentifier(group_icon_x, "drawable", "com.myexample.privateeventconnection"));
-            groupCount++;
             return view1;
         }
     }
