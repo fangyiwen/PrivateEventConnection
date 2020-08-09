@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#D9ADAD</color>
-    <color name="colorPrimaryDark">#AD9D9d</color>
+    <color name="colorPrimary">#97CBA9</color>
+    <color name="colorPrimaryDark">#668BA4</color>
     <color name="eventCard">#6CBF84</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="colorpurple">#726A95</color>
