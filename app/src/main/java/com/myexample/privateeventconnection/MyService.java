@@ -55,8 +55,6 @@ public class MyService extends Service {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-
-
     }
 
     @Override
@@ -68,7 +66,6 @@ public class MyService extends Service {
     public void onDestroy() {
 
     }
-
 
     @Override
     public IBinder onBind(Intent intent) {

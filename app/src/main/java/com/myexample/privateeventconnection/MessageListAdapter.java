@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -38,7 +37,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             // If some other user sent the message
             return VIEW_TYPE_MESSAGE_RECEIVED;
         }
-
     }
 
     @NonNull

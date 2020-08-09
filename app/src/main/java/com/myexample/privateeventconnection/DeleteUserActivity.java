@@ -182,8 +182,6 @@ public class DeleteUserActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-
-
     }
 
     public void deleteFirebaseAuth(final String email, final String password) {

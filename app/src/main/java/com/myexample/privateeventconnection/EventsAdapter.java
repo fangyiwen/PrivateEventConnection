@@ -43,7 +43,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     private String uid;
     private FirebaseAuth mAuth;
 
-    public EventsAdapter(Context mContext, List<Event> events, String groupname, Set<String> joined){
+    public EventsAdapter(Context mContext, List<Event> events, String groupname, Set<String> joined) {
         this.mContext = mContext;
         this.events = events;
         this.groupname = groupname;
@@ -66,10 +66,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         final Event event = events.get(position);
         final String token = event.getEventToken();
 
-        if(joined.contains(token)){
+        if (joined.contains(token)) {
             holder.join.setImageResource(R.drawable.baseline_remove_circle_outline_24);
             holder.join.setTag("Leave");
-        }else{
+        } else {
             holder.join.setImageResource(R.drawable.baseline_add_circle_outline_24);
             holder.join.setTag("Join");
         }
@@ -79,10 +79,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         final Calendar myCalendar = Calendar.getInstance();
         String currentTime = sdf.format(myCalendar.getTime());
         Log.d("currenttime", currentTime);
-        if(event.getEventTime().compareTo(currentTime) < 0){
+        if (event.getEventTime().compareTo(currentTime) < 0) {
             //these are past events
 //            holder.itemView.setBackgroundColor(Color.parseColor("#FBE6D4"));
-        }else{
+        } else {
             // upcoming events
 //            holder.itemView.setBackgroundColor(Color.parseColor("#FECB89"));
         }
@@ -94,17 +94,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                         .getReference("Users").child(uid).child("Groups")
                         .child(groupname);
 
-
-
-                if(holder.join.getTag().toString().equals("Leave")){
+                if (holder.join.getTag().toString().equals("Leave")) {
 
                     FirebaseDatabase.getInstance().getReference().child("Groups").child(groupname).child("Events").child(token).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Event event = dataSnapshot.child("EventInfo").getValue(Event.class);
-                            if(event != null){
+                            if (event != null) {
                                 //current user is admin
-                                if(uid.equals(event.getAdmin())){
+                                if (uid.equals(event.getAdmin())) {
                                     //prompt the dialog
 
                                     AlertDialog.Builder altdial = new AlertDialog.Builder(mContext);
@@ -112,7 +110,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-
 
                                                     //delete this event information from all users
                                                     deleteAllUsersEvents(groupname, token);
@@ -129,10 +126,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                                                             mContext.startActivity(intent);
                                                         }
                                                     });
-
-
-
-
                                                 }
                                             })
                                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -147,15 +140,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                                     alertDialog.setTitle("Warning");
                                     alertDialog.show();
 
-
-
                                 }
                                 // current user is not admin
                                 else {
                                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if(snapshot.getChildrenCount()>1){
+                                            if (snapshot.getChildrenCount() > 1) {
                                                 reference.child(token).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
@@ -163,7 +154,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                                                         holder.join.setTag("Join");
                                                     }
                                                 });
-                                            }else{
+                                            } else {
                                                 reference.setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
@@ -179,12 +170,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
                                         }
                                     });
-
                                 }
                             }
-
-
-
                         }
 
                         @Override
@@ -192,9 +179,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
                         }
                     });
-
-                }else{
-                    HashMap<String, String > hashMap = new HashMap<>();
+                } else {
+                    HashMap<String, String> hashMap = new HashMap<>();
                     hashMap.put("Admin", event.getAdmin());
                     hashMap.put("Description", event.getDescription());
                     hashMap.put("EventName", event.getEventName());
@@ -204,20 +190,20 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                     hashMap.put("Latitude", event.getLatitude());
                     hashMap.put("Longitude", event.getLongitude());
                     reference.child(token).child("EventInfo").setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
 //                        holder.join.setText("Leave");
-                        holder.join.setImageResource(R.drawable.baseline_remove_circle_outline_24);
-                        holder.join.setTag("Leave");
-                    }
-                });
+                            holder.join.setImageResource(R.drawable.baseline_remove_circle_outline_24);
+                            holder.join.setTag("Leave");
+                        }
+                    });
                 }
             }
         });
         holder.eventName.setText(event.EventName);
         holder.location.setText(event.Location);
         holder.time.setText(event.EventTime);
-        holder.itemView.setOnClickListener(new View.OnClickListener(){
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, EventActivity.class);
@@ -235,13 +221,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView join;
         public TextView eventName;
         public TextView location;
         public TextView time;
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView) {
             super(itemView);
             join = itemView.findViewById(R.id.groupinfo_joinorleave);
             eventName = itemView.findViewById(R.id.groupinfo_eventTitle);
@@ -257,8 +243,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 for (DataSnapshot user : snapshot.getChildren()) {
-                    if(user.child("Groups").child(groupName).getValue() != null){
-                        if(user.child("Groups").child(groupName).child(token).getValue() != null) {
+                    if (user.child("Groups").child(groupName).getValue() != null) {
+                        if (user.child("Groups").child(groupName).child(token).getValue() != null) {
                             if (user.child("Groups").child(groupName).getChildrenCount() <= 1) {
                                 // only one left
                                 DatabaseReference rf = FirebaseDatabase.getInstance().getReference("Users").child(uid);

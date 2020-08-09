@@ -121,8 +121,6 @@ public class GroupInfoActivity extends AppCompatActivity {
                             if(event!=null && !event.getLatitude().equals("-92")){
                                 mEvents.add(event);
                             }
-
-
                         }
                     }
                 }
@@ -154,8 +152,6 @@ public class GroupInfoActivity extends AppCompatActivity {
             }
         });
 
-
-
         // Set group name
         this.groupnametx.setText(groupname);
         // Retrieve an instance of database using reference the location
@@ -167,7 +163,6 @@ public class GroupInfoActivity extends AppCompatActivity {
                 String description = dataSnapshot.child("Description").getValue().toString();
                 // Set description
                 groupDescription.setText(description);
-
             }
 
             @Override

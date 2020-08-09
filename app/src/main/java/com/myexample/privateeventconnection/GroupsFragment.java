@@ -82,7 +82,6 @@ public class GroupsFragment extends Fragment {
                     if (!child.getKey().equals("DefaultGroup")) {
                         groupNames.add(child.getKey());
                     }
-
                 }
 
                 // Different thread here. We need to notify the gridview thread to display group information

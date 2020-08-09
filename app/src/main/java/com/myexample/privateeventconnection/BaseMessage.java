@@ -6,16 +6,16 @@ public class BaseMessage {
     private String time;
     private String uid;
 
-    public BaseMessage(String name, String content, String time, String uID){
+    public BaseMessage(String name, String content, String time, String uID) {
         this.name = name;
         this.content = content;
         this.time = time;
         this.uid = uID;
     }
-    public BaseMessage(){
+
+    public BaseMessage() {
 
     }
-
 
     public void setuID(String uID) {
         this.uid = uID;

@@ -61,7 +61,6 @@ public class EventActivity extends AppCompatActivity {
         final String token = intent.getStringExtra("token");
         final String btntext = intent.getStringExtra("buttontext");
 
-
         showmore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +112,6 @@ public class EventActivity extends AppCompatActivity {
             }
         });
 
-
         join.setText(btntext);
         if(btntext.equals("Join")){
             join.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_add_circle_outline_24, 0, 0,0);
@@ -124,9 +122,6 @@ public class EventActivity extends AppCompatActivity {
         final DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference("Users").child(uid).child("Groups")
                 .child(groupName);
-
-
-
 
         mDatabase = FirebaseDatabase.getInstance().getReference()
                 .child("Groups").child(groupName)
@@ -210,7 +205,6 @@ public class EventActivity extends AppCompatActivity {
             }
         });
 
-
         // If non-admin users are still in this activity but this event has been dismissed,
         // send users to afterlogin activity
 
@@ -226,9 +220,6 @@ public class EventActivity extends AppCompatActivity {
                         //set this activity to the top of stack, so users cannot go back to dismissed events
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-
-
-
                     }
                 }
 
@@ -328,9 +319,6 @@ public class EventActivity extends AppCompatActivity {
                                     });
                                 }
                             }
-
-
-
                         }
 
                         @Override
@@ -370,8 +358,6 @@ public class EventActivity extends AppCompatActivity {
                                     }
                                 });
                             }
-
-
                         }
 
                         @Override
@@ -382,7 +368,6 @@ public class EventActivity extends AppCompatActivity {
                 }
             }
         });
-
 
         mDatabase = FirebaseDatabase.getInstance().getReference()
                 .child("Groups").child(groupName)
@@ -445,7 +430,6 @@ public class EventActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private void deleteAllUsersEvents(final String groupName, final String token) {

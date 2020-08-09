@@ -17,6 +17,6 @@
     <fragment
         android:id="@+id/info"
         android:name="com.myexample.privateeventconnection.InfoFragment"
-        android:label="Info"
+        android:label="Settings"
         tools:layout="@layout/info_fragment_design_ui" />
 </navigation>
