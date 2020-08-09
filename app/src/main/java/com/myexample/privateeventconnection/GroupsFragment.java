@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -86,6 +87,7 @@ public class GroupsFragment extends Fragment {
 
                 // Different thread here. We need to notify the gridview thread to display group information
                 // This code is a must.
+                Collections.sort(groupNames);
                 gridView.setAdapter(customAdapter);
 //                customAdapter.notifyDataSetChanged();
 
