@@ -1,5 +1,7 @@
 # Private Event Connection
 CS5520 Final Project
+Google Play Link: https://play.google.com/store/apps/details?id=com.myexample.privateeventconnection
+
 
 ## App Description
 There is always a time that we want to get connected with groups and attend online/offline events. However, we would like only to join and share the moments with our closest friends or someone we have known each other in real life. Today and Now, try the app, Private Event Connection, to meet people in the same organizations in real life and do anything you want with them, e.g., learning, sports, and hiking. Your security is guaranteed since no one, except who is from your organizations, can get access to the group you belong to and get connected with you. Download the app to discover events hosted by people around you, or start a group to schedule your own events.
